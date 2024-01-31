@@ -1,0 +1,13 @@
+.responsiveMenu{
+    animation: showMenu .8s ease-in-out;
+    transition: .8s;
+}
+
+@keyframes showMenu {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-500px);
+    }
+}

@@ -1,0 +1,2 @@
+# Proposito de la asociación
+En la búsqueda por optimizar las ideas y acciones para objetivos educativos, la presente página es una acompañante confiable en cada uno de los momentos de la planeación y ejecución de los encuentros académicos; según la metodología del docente en cada caso, en cada consulta y/o en cada elaboración de actividades institucionales Paidagó será un asistente que se reconstruye, deviene en el aprendizaje.
