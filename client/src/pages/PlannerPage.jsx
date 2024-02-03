@@ -15,8 +15,8 @@ function Planner(){
     const { register, handleSubmit } = useForm()
     const [ activity, setActivity ] = useState([])
 
-    const onSubmit = handleSubmit(async data => {
-        const res = await createActivity(data)
+    const onSubmit = handleSubmit(async info => {
+        const res = await createActivity({...info, token: window.localStorage.getItem('token')})
         setActivity(res.data.generatedClass.split('\n\n').map( a => a.split(':') ))
     }) 
 

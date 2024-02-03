@@ -26,11 +26,12 @@ export const register = async (req, res) => {
         const token = await createAccessToken({ id: userSaved._id });
 
         
-        return res.status(201).cookie('token', token).json({
+        return res.status(201).json({
             id: userSaved._id,
             username: userSaved.username,
             email: userSaved.email,
             paymentID: userSaved.paymentID,
+            token,
             createdAt: userSaved.createdAt,
             updatedAt: userSaved.updatedAt
         })
@@ -56,11 +57,12 @@ export const login = async (req, res) => {
         const token = await createAccessToken({ id: userFound });
 
         
-        return res.status(201).cookie('token', token).json({
+        return res.status(201).json({
             id: userFound._id,
             username: userFound.username,
             email: userFound.email,
             paymentID: userFound.paymentID,
+            token,
             createdAt: userFound.createdAt,
             updatedAt: userFound.updatedAt
         })
@@ -98,7 +100,7 @@ export const profile = async (req, res) => {
 
 export const verifyToken = async (req, res) => {
     try {
-        const { token } = req.cookies
+        const { token } = req.body
 
         if (!token) return res.status(401).json({ message: 'No autorizado' })
 

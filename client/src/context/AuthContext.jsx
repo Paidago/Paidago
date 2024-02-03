@@ -23,6 +23,7 @@ export function AuthProvider ({ children })  {
     const signup = async user => {
         try{
             const res = await register(user)
+            window.localStorage.setItem('token', res.data.token)
             setUser(res.data)
             setIsAuthenticated(true)
         }catch(error){
@@ -35,6 +36,7 @@ export function AuthProvider ({ children })  {
     const signin = async user => {
         try{
             const res = await login(user)
+            window.localStorage.setItem('token', res.data.token)
             setUser(res.data)
             setIsAuthenticated(true)
         }catch(error){
@@ -51,6 +53,7 @@ export function AuthProvider ({ children })  {
     const signout = async () => {
         try{
             await logout()
+            window.localStorage.removeItem('token')
             setUser(null)
             setIsAuthenticated(false)
         }catch(error){
@@ -61,7 +64,7 @@ export function AuthProvider ({ children })  {
 
     const fetchUser = async () => {
         try{
-            const token = Cookies.get('token')
+            const token = window.localStorage.getItem('token')
 
             if(!token){
                 setIsAuthenticated(false)
@@ -109,7 +112,8 @@ export function AuthProvider ({ children })  {
             signin,
             signout,
             errors,
-            loading
+            loading,
+            fetchUser
         }}>
             {children}
         </AuthContext.Provider>
