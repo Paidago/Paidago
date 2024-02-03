@@ -78,13 +78,13 @@ export const completeOrder = async (req, res) => {
       paymentID  
     })
     const token = await createAccessToken({ id });
-    res.cookie('token', token)
-    res.status(200)
-    return res.json({
+
+    return res.status(200).json({
       id: user._id,
       username: user.username,
       email: user.email,
       paymentID: user.paymentID,
+      token
     })
   }catch(error){
     console.log(error)

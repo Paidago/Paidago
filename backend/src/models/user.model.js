@@ -18,8 +18,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     paymentID: {
-        type: String,
-        unique: true
+        type: String
     }
 },{
     timestamps: true
