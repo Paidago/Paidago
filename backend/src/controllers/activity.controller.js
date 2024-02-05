@@ -6,7 +6,7 @@ import axios from 'axios'
 export const getAllActivities = async (req, res) => {
     try {
         const activities = await Activity.find({ user: req.userId }).populate('user')
-        res.status(200).json(activities)
+        return res.status(200).json(activities)
     } catch (error) {
         res.status(500).json({ message: error.message })
     }

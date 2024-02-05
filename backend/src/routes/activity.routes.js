@@ -6,7 +6,7 @@ import { createActivitySchema } from '../schemas/activity.schema.js'
 
 const router = new Router()
 
-router.get('/activities', authRequired, getAllActivities)
+router.post('/activities', authRequired, getAllActivities)
 
 router.get('/activity/:id', authRequired, getActivityById)
 
