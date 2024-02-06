@@ -9,7 +9,6 @@ function History() {
     const getActivities = async () => {
         try {
             const res = await getAllActivities(window.localStorage.getItem('token'))
-            console.log(res)
             setActivities(res.data)
         }catch(err) {
             console.log(err)
