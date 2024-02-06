@@ -12,7 +12,7 @@ router.get('/activity/:id', authRequired, getActivityById)
 
 router.get('/activity/:subject', authRequired, getActivitiesBySubject)
 
-//router.get('/activity/:subject', authRequired, createExamBySubject)
+router.post('/createExam', authRequired, createExamBySubject)
 
 router.post('/createActivities', authRequired, validateSchema(createActivitySchema), createActivity)
 
