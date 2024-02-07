@@ -1,14 +1,13 @@
 import { useState } from "react"
 import { createActivity } from "../api/activity"
 import Carousel from "../components/CarouselPlanner"
-import NavBar from "../components/NavBar"
 import { useForm } from 'react-hook-form'
 import Card from "../components/CardCarousel"
-import Footer from "../components/Footer"
 import PayPalPayment from '../components/PayPalPayment.jsx'
 import { useAuth } from "../context/AuthContext"
 import { Link } from "react-router-dom"
 import Modal from "../components/Modal.jsx"
+import MainLayout from "../Layout/MainLayout"
 
 function Planner(){
     const { user } = useAuth()
@@ -21,9 +20,7 @@ function Planner(){
     }) 
 
     return(
-        <div className="flex flex-col justify-between items-center">
-            <NavBar />
-            <article className={`relative md:w-3/4 bg-white p-6 my-10 `}>
+        <MainLayout >
                 <figure className="border-y-4 text-center border-black py-7 mb-7">
                     <p className="leading-loose text-xl">&#34;La verdadera dirección del desarrollo del pensamiento no es de lo invididual a lo social, sino de lo social a lo individual.&#34;</p>
                     <cite className="text-xl">—L. Vygotsky—</cite>
@@ -84,9 +81,7 @@ function Planner(){
                         <PayPalPayment />
                     </Modal>
                 )}
-            </article>
-            <Footer />
-        </div>
+        </MainLayout>
     )
 }
 

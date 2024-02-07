@@ -1,7 +1,11 @@
+import MainLayout from "../Layout/MainLayout"
+
 function About(){
 
     return(
-        <div>About</div>
+        <MainLayout>
+            About
+        </MainLayout>
     )
 }
 

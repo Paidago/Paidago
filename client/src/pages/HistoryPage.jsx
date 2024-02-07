@@ -1,7 +1,6 @@
 import { getAllActivities } from "../api/activity"
 import { useState, useEffect } from "react"
-import NavBar from "../components/NavBar"
-import Footer from "../components/Footer"
+import MainLayout from "../Layout/MainLayout"
 
 function History() {
     const [ activities, setActivities ] = useState([])
@@ -20,24 +19,20 @@ function History() {
     },[])
 
     return (
-        <div className="flex flex-col justify-between items-center">
-            <NavBar />
-                <main className={`relative md:w-3/4 bg-white p-6 my-10 `}>
-                    {
-                        activities && activities.map(activity => (
-                            <li key={activity._id}>
-                                <p>{activity.methodology}</p>
-                                <p>{activity.topic}</p>
-                                <p>{activity.competence}</p>
-                                <p>{activity.subject}</p>
-                                <p>{activity.tools}</p>
-                                <p>{activity.generatedClass}</p>
-                            </li>
-                        ))
-                    }
-                </main>
-            <Footer />
-        </div>
+        <MainLayout>
+            {
+                activities && activities.map(activity => (
+                    <li key={activity._id}>
+                        <p>{activity.methodology}</p>
+                        <p>{activity.topic}</p>
+                        <p>{activity.competence}</p>
+                        <p>{activity.subject}</p>
+                        <p>{activity.tools}</p>
+                        <p>{activity.generatedClass}</p>
+                    </li>
+                ))
+            }
+        </MainLayout>
     )
 }
 
