@@ -1,4 +1,5 @@
 import MainLayout from "../Layout/MainLayout"
+import SubjectsSelect from "../components/SubjectsSelect.jsx"
 import { useState } from "react"
 import { useForm } from 'react-hook-form'
 import { createExam } from "../api/activity"
@@ -24,12 +25,7 @@ function CreateExam(){
                 <form onSubmit={onSubmit} className='container mx-auto p-8 bg-slate-200 rounded-lg shadow-md text-black'>
                     <div>
                         <label htmlFor="name">Primero filtra las clases por asignatura para que sea mas organizado</label>
-                        <select className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" { ...register( "subject", { required: true } ) }>
-                                <option value="Historia">Historia</option>
-                                <option value="Ciencias Sociales">Ciencias Sociales</option>
-                                <option value="Ciencias Naturales">Ciencias Naturales</option>
-                                <option value="Matematicas">Matematicas</option>
-                            </select>
+                        <SubjectsSelect className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" register={register} />
                     </div>
                     <div>
                         <label htmlFor="especificaciones">

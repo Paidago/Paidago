@@ -1,8 +1,11 @@
 import { getAllActivities } from "../api/activity"
+import { useForm } from 'react-hook-form'
 import { useState, useEffect } from "react"
 import MainLayout from "../Layout/MainLayout"
+import SubjectsSelect from "../components/SubjectsSelect.jsx"
 
 function History() {
+    const { register } = useForm()
     const [ activities, setActivities ] = useState([])
 
     const getActivities = async () => {
@@ -20,6 +23,7 @@ function History() {
 
     return (
         <MainLayout>
+            <SubjectsSelect className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" register={register} />
             {
                 activities && activities.map(activity => (
                     <li key={activity._id}>

@@ -8,6 +8,7 @@ import { useAuth } from "../context/AuthContext"
 import { Link } from "react-router-dom"
 import Modal from "../components/Modal.jsx"
 import MainLayout from "../Layout/MainLayout"
+import SubjectsSelect from "../components/SubjectsSelect.jsx"
 
 function Planner(){
     const { user } = useAuth()
@@ -49,7 +50,7 @@ function Planner(){
                         </div>
                         <div className="mb-4">
                             <label htmlFor="asignatura" className="block text-black">Asignatura</label>
-                            <input type="text" className="form-input w-full mt-1 p-2 border border-black rounded-md shadow-sm placeholder:text-black" placeholder="Asignatura" { ...register( "subject", { required: true } ) }/>
+                            <SubjectsSelect className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" register={register}/>
                         </div>
                         <div className="mb-4">
                             <label htmlFor="herramientasClase" className="block text-black">Herramientas</label>
