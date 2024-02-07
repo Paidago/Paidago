@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js'
 import activityRoutes from './routes/activity.routes.js'
 import paymentRoutes from './routes/payment.routes.js'
+import examRoutes from './routes/exam.routes.js'
 import { URL } from './config.js';
 
 const app = express();
@@ -28,6 +29,7 @@ app.use(cookieParser());
 //Routes
 app.use('/api', authRoutes)
 app.use('/api', activityRoutes)
+app.use('/api', examRoutes)
 app.use(paymentRoutes)
 
 export { app }
