@@ -2,7 +2,7 @@ import MainLayout from "../Layout/MainLayout"
 import SubjectsSelect from "../components/SubjectsSelect.jsx"
 import { useState } from "react"
 import { useForm } from 'react-hook-form'
-import { createExam } from "../api/activity"
+import { createExam } from "../api/exam.js"
 
 function CreateExam(){
     const { register, handleSubmit } = useForm()

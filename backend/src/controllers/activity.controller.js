@@ -28,7 +28,7 @@ export const getActivityById = async (req, res) => {
 
 export const getActivitiesBySubject = async (req, res) => {
     try {
-        const activities = await Activity.find({ subject: req.params.subject })
+        const activities = await Activity.find({ subject: req.body.subject, user: req.userId })
 
         if (activities) {
             res.status(200).json(activities)

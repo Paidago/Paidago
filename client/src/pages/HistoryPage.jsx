@@ -1,12 +1,22 @@
-import { getAllActivities } from "../api/activity"
+import { getAllActivities, getActivitiesBySubject } from "../api/activity"
 import { useForm } from 'react-hook-form'
 import { useState, useEffect } from "react"
 import MainLayout from "../Layout/MainLayout"
 import SubjectsSelect from "../components/SubjectsSelect.jsx"
 
 function History() {
-    const { register } = useForm()
+    const { register, handleSubmit } = useForm()
     const [ activities, setActivities ] = useState([])
+
+    const onSubmit = handleSubmit(async ({subject}) => {
+        try{
+            console.log(typeof subject)
+            const res = await getActivitiesBySubject({ subject, token: window.localStorage.getItem('token') })
+            setActivities(res.data)
+        }catch(err){
+            console.log(err)
+        }
+    }) 
 
     const getActivities = async () => {
         try {
@@ -23,7 +33,11 @@ function History() {
 
     return (
         <MainLayout>
-            <SubjectsSelect className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" register={register} />
+            <form onSubmit={onSubmit}>
+                <label htmlFor="">Puedes filtrar las clases por asignatura!!</label>
+                <SubjectsSelect className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" register={register} />
+                <button className="bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar</button>
+            </form>
             {
                 activities && activities.map(activity => (
                     <li key={activity._id}>
