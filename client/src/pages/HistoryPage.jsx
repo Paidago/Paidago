@@ -10,8 +10,12 @@ function History() {
 
     const onSubmit = handleSubmit(async ({subject}) => {
         try{
-            console.log(typeof subject)
-            const res = await getActivitiesBySubject({ subject, token: window.localStorage.getItem('token') })
+            console.log(subject)
+            let res
+            if(subject === 'Todas')
+                res = await getAllActivities(window.localStorage.getItem('token'))
+            else
+                res = await getActivitiesBySubject({ subject, token: window.localStorage.getItem('token') })
             setActivities(res.data)
         }catch(err){
             console.log(err)
@@ -35,7 +39,9 @@ function History() {
         <MainLayout>
             <form onSubmit={onSubmit}>
                 <label htmlFor="">Puedes filtrar las clases por asignatura!!</label>
-                <SubjectsSelect className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" register={register} />
+                <SubjectsSelect className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" register={register} >
+                    <option value='Todas'>Todas</option>
+                </SubjectsSelect>
                 <button className="bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar</button>
             </form>
             {
