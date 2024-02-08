@@ -30,6 +30,9 @@ export const createOrder = async (req, res) => {
   try{
     const { cart } = req.body;
     const accessToken = await generateAccessToken();
+    
+    let expiration_time = new Date()
+    expiration_time.setMonth( new Date().getMonth() + 1 )
     const order = {
       intent: "CAPTURE",
       purchase_units: [
@@ -38,6 +41,7 @@ export const createOrder = async (req, res) => {
             currency_code: "USD",
             value: cart.product.cost,
           },
+          expiration_time: expiration_time.toISOString()
         },
       ],
     };

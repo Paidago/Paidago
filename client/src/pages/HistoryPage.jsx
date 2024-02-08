@@ -3,8 +3,12 @@ import { useForm } from 'react-hook-form'
 import { useState, useEffect } from "react"
 import MainLayout from "../Layout/MainLayout"
 import SubjectsSelect from "../components/SubjectsSelect.jsx"
+import { useAuth } from "../context/AuthContext"
+import { Link } from "react-router-dom"
+import Modal from "../components/Modal.jsx"
 
 function History() {
+    const { user } = useAuth()
     const { register, handleSubmit } = useForm()
     const [ activities, setActivities ] = useState([])
 
@@ -32,12 +36,12 @@ function History() {
     }
 
     useEffect(() => {
-        getActivities()
+        if (user) getActivities()
     },[])
 
     return (
         <MainLayout>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} className={`container mx-auto p-8 bg-slate-200 rounded-lg shadow-md text-black ${!user && 'blur-lg'}`}>
                 <label htmlFor="">Puedes filtrar las clases por asignatura!!</label>
                 <SubjectsSelect className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" register={register} >
                     <option value='Todas'>Todas</option>
@@ -45,7 +49,7 @@ function History() {
                 <button className="bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar</button>
             </form>
             {
-                activities && activities.map(activity => (
+                user && activities && activities.map(activity => (
                     <li key={activity._id}>
                         <p>{activity.methodology}</p>
                         <p>{activity.topic}</p>
@@ -55,6 +59,11 @@ function History() {
                         <p>{activity.generatedClass}</p>
                     </li>
                 ))
+            }
+            { !user && 
+                <Modal message='Debes haber iniciado sesion para ver tu historial'>
+                    <Link to="/login" className="bg-purple-500 w-20 font-bold text-white py-2 px-4 rounded-md">Login</Link>
+                </Modal>
             }
         </MainLayout>
     )

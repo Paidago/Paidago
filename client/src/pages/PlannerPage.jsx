@@ -32,7 +32,7 @@ function Planner(){
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="mb-4">
                             <label htmlFor="filtro-metodologias" className="block text-black">Metodologia</label>
-                            <select className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" { ...register( "methodology", { required: true } ) }>
+                            <select className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm bg-white" { ...register( "methodology", { required: true } ) }>
                                 <option value="Constructivismo">Constructivismo</option>
                                 <option value="Conductismo">Conductismo</option>
                                 <option value="Aprendizaje Basado en Proyectos (ABP)">Aprendizaje Basado en Proyectos (ABP)</option>
