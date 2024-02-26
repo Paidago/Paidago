@@ -11,6 +11,7 @@ import StorePage from './pages/store/StorePage'
 import ProtectedRoute from './ProtectedRoute'
 import HistoryPage from './pages/HistoryPage'
 import CreateExamPage from './pages/CreateExamPage'
+import InstagramPage from './pages/InstagramPage'
 import { AuthProvider } from './context/AuthContext'
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
@@ -35,6 +36,7 @@ function App() {
             <Route path="/planeador" element={<PlannerPage />} />
             <Route path="/historial-clases" element={<HistoryPage />} />
             <Route path="/crear-examen" element={<CreateExamPage />} />
+            <Route path="/instagram" element={<InstagramPage />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/profile" element={<ProfilePage />} />
