@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { getPosts } from "../api/resource.js"
 import Layout from "../Layout/MainLayout.jsx"
 
-function InstagramPage() {
+function QuotesPage() {
     const [ posts, setPosts ] = useState([])
 
     const fetchposts = async () => {
@@ -22,8 +22,15 @@ function InstagramPage() {
         <ul>
             { posts && posts.map(post => (
                 <li key={post.id}>
-                    <img src={post.media_url} alt={post.media_type} />
-                    <p>{post.caption}</p>
+                    {
+                        post.media_type === 'VIDEO' ? (<p>{post.caption.split('\n\n')[1]}</p>) : (
+                            <>
+                                <p>{post.caption.split('\n\n')[1]}</p>
+                                <img src={post.media_url} alt={post.media_type} />
+                            </>
+                        )
+                    }
+                    
                 </li>
             ))}
         </ul>        
@@ -31,4 +38,4 @@ function InstagramPage() {
   )
 }
 
-export default InstagramPage
+export default QuotesPage
