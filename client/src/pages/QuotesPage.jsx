@@ -19,18 +19,11 @@ function QuotesPage() {
     },[])
   return (
     <Layout>
-        <ul>
+        <ul className="justify-center items-center flex flex-wrap gap-2">
             { posts && posts.map(post => (
-                <li key={post.id}>
-                    {
-                        post.media_type === 'VIDEO' ? (<p>{post.caption.split('\n\n')[1]}</p>) : (
-                            <>
-                                <p>{post.caption.split('\n\n')[1]}</p>
-                                <img src={post.media_url} alt={post.media_type} />
-                            </>
-                        )
-                    }
-                    
+                post.media_type !== 'VIDEO' && 
+                <li className="max-w-80 min-w-56 flex-grow " key={post.id}>
+                    <img src={post.media_url} alt={post.media_type} className="w-auto h-auto" />
                 </li>
             ))}
         </ul>        
