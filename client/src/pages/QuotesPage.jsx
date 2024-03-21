@@ -8,7 +8,7 @@ function QuotesPage() {
     const fetchposts = async () => {
     try {
         const posts = await getPosts()
-        console.log(posts)
+        //console.log(posts)
         setPosts(posts.data.data)
     } catch (error) {
         console.log(error)
