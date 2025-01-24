@@ -1,7 +1,11 @@
+import MainLayout from "../Layout/MainLayout"
+
 function Profile(){
 
     return(
-        <div>Profile</div>
+        <MainLayout>
+            Profile
+        </MainLayout>
     )
 }
 

@@ -5,8 +5,8 @@ import axios from 'axios'
 
 export const getAllActivities = async (req, res) => {
     try {
-        const activities = await Activity.find({ user: req.userId }).populate('user')
-        res.status(200).json(activities)
+        const activities = await Activity.find({ user: req.userId })
+        return res.status(200).json(activities)
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -28,7 +28,7 @@ export const getActivityById = async (req, res) => {
 
 export const getActivitiesBySubject = async (req, res) => {
     try {
-        const activities = await Activity.find({ subject: req.params.subject })
+        const activities = await Activity.find({ subject: req.body.subject, user: req.userId })
 
         if (activities) {
             res.status(200).json(activities)
@@ -116,16 +116,5 @@ export const createActivity = async (req, res) => {
         res.status(400).json({
             message: error.message
         })
-    }
-}
-
-export const createExamBySubject = async (req, res) => {
-    try {
-        const activity = await Activity.find({ subject: req.params.subject })
-
-        //Pedirle a chat GPT que cree un examen con la informacion recopilada
-        res.status(200).json(activity)
-    } catch (error) {
-        res.status(500).json({ message: error.message })
     }
 }

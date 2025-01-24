@@ -7,6 +7,7 @@ function NavBar() {
     const { signout, isAuthenticated } = useAuth()
     const [ activeProfile, setActiveProfile ] = useState(false)
     const [ activeMenu, setActiveMenu ] = useState(false)
+    const [ activePlanner, setActivePlanner ] = useState(false)
 
     const onClick = () => {
         signout()
@@ -19,6 +20,10 @@ function NavBar() {
 
     const onClickMenu = () => {
         setActiveMenu(!activeMenu)
+    }
+
+    const onClickPlanner = () => {
+        setActivePlanner(!activePlanner)
     }
 
     return (
@@ -48,7 +53,19 @@ function NavBar() {
                     <div className="hidden sm:ml-6 sm:block">
                         <div className="flex space-x-4">
                             <Link to="/" className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Inicio</Link>
-                            <Link to="/planeador" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" >Planeador</Link>
+                            <div className="relative ml-3">
+                        <div>
+                            <button type="button" className="text-white rounded-md px-3 py-2 text-sm font-medium" id="user-menu-button" onClick={onClickPlanner}>
+                                Herramientas del docente
+                            </button>
+                        </div>
+
+                        <div className={`absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${activePlanner ? 'flex flex-col' : 'hidden'} `}>
+                            <Link to='/planeador' className="p-4 text-sm leading-normal text-blue-gray-500/80">Planeador</Link>
+                            <Link to='/historial-clases' className="p-4 text-sm leading-normal text-blue-gray-500/80">Historial de clases</Link>
+                            <Link to='/crear-examen' className="p-4 text-sm leading-normal text-blue-gray-500/80">Crear examen</Link>
+                        </div>
+                    </div>
                             <Link to="/recursos" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Recursos</Link>
                             <Link to="/blog" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Blog</Link>
                             <Link to="/about" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Sobre Nosotros</Link>
