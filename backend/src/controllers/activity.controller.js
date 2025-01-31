@@ -1,6 +1,7 @@
 import { AI_API_KEY, methodologies } from '../config.js'
 import Activity from '../models/activity.model.js'
 import axios from 'axios'
+import pdf from 'pdf-parse'
 
 
 export const getAllActivities = async (req, res) => {
@@ -41,15 +42,22 @@ export const getActivitiesBySubject = async (req, res) => {
 }
 
 export const createActivity = async (req, res) => {
-    const { methodology, topic, tools, competence, subject } = req.body
+    const { methodology, topic, tools, competence, subject, file } = req.body
 
     try {
         const metodologiaEncontrada = methodologies.find( m => m.nombre === methodology );
 		const tiempos = new Intl.ListFormat("es").format( metodologiaEncontrada.tiempos.map(tiempo => tiempo.toUpperCase().concat(':') ) )
 
+        let texto = ''
+
+        if (file){
+            const info = await pdf(req.file.buffer);
+            texto = info.text.substring(0, 5000); // Limitar a 5000 caracteres
+        }
+
         const prompt = `
             \n¿Que vas a hacer?
-            Conviertete en una experta en pedagogia y didactica para crear una clase basada en la metodologia ${ methodology }.\n
+            Conviertete en una experta en pedagogia y didactica para crear una clase basada en la ${file ? 'informacion de este PDF: ' + texto + '\nRespetando la metodologia' + methodology +'\n' : 'metodologia: ' + methodology + '\n'}.\n
             Debe ser acerca del tema ${ topic }.\n
             Debe evaluar la siguiente competencia: ${ competence }.\n
             Ten en cuenta que solo tienes acceso a las siguientes herramientas: ${ tools }.\n
@@ -118,3 +126,4 @@ export const createActivity = async (req, res) => {
         })
     }
 }
+
