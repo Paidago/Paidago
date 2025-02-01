@@ -17,6 +17,7 @@ export const createExamBySubject = async (req, res) => {
     try {
         const { subject, especifications } = req.body
         const activities = await Activity.find({ subject })
+        console.log(activities)
 
         //Pedirle a chat GPT que cree un examen con la informacion recopilada
         const prompt = `
