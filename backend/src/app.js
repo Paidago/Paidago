@@ -8,7 +8,7 @@ import authRoutes from './routes/auth.routes.js'
 import activityRoutes from './routes/activity.routes.js'
 import paymentRoutes from './routes/payment.routes.js'
 import examRoutes from './routes/exam.routes.js'
-import resourceRoutes from './routes/resouce.routes.js'
+import resourceRoutes from './routes/resource.routes.js'
 import { URL } from './config.js';
 
 const app = express();
