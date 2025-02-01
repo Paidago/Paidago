@@ -32,18 +32,36 @@ function Planner() {
                 <cite className="text-xl">—L. Vygotsky—</cite>
             </figure>
 
-            <form id="form-clase" className={`container mx-auto p-8 bg-slate-200 rounded-lg shadow-md text-black ${!user && 'blur-lg'}`} onSubmit={onSubmit}>
-                <h2 className="text-2xl font-bold mb-4 text-center uppercase">Crea tu clase!!</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="mb-4">
-                        <label htmlFor="filtro-metodologias" className="block text-black">Metodologia</label>
-                        <select className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" {...register("methodology", { required: true })}>
-                            <option value="Constructivismo">Constructivismo</option>
-                            <option value="Conductismo">Conductismo</option>
-                            <option value="Aprendizaje Basado en Proyectos (ABP)">Aprendizaje Basado en Proyectos (ABP)</option>
-                            <option value="Aprendizaje por Competencias">Aprendizaje por Competencias</option>
-                            <option value="Aprendizaje cooperativo">Aprendizaje cooperativo</option>
-                        </select>
+                <form id="form-clase" className={`container mx-auto p-8 bg-slate-200 rounded-lg shadow-md text-black  ${!user && 'blur-lg'}`} onSubmit={onSubmit}>
+                    <h2 className="text-2xl font-bold mb-4 text-center uppercase">Crea tu clase!!</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="mb-4">
+                            <label htmlFor="filtro-metodologias" className="block text-black">Metodologia</label>
+                            <select className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm bg-white" { ...register( "methodology", { required: true } ) }>
+                                <option value="Constructivismo">Constructivismo</option>
+                                <option value="Conductismo">Conductismo</option>
+                                <option value="Aprendizaje Basado en Proyectos (ABP)">Aprendizaje Basado en Proyectos (ABP)</option>
+                                <option value="Aprendizaje por Competencias">Aprendizaje por Competencias</option>
+                                <option value="Aprendizaje cooperativo">Aprendizaje cooperativo</option>
+                            </select>
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="temaClase" className="block text-black">Tema</label>
+                            <input type="text" className="form-input w-full mt-1 p-2 border border-black rounded-md shadow-sm placeholder:text-black" placeholder="Tema" { ...register( "topic", { required: true } ) }/>
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="competenciaClase" className="block text-black">Competencia</label>
+                            <input type="text" className="form-input w-full mt-1 p-2 border border-black rounded-md shadow-sm placeholder:text-black" placeholder="Competencia" { ...register( "competence", { required: true } ) }/>
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="asignatura" className="block text-black">Asignatura</label>
+                            <SubjectsSelect className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" register={register}/>
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="herramientasClase" className="block text-black">Herramientas</label>
+                            <textarea className="form-input w-full mt-1 p-2 border border-black rounded-md shadow-sm resize-none min-h-20 placeholder:text-black" placeholder="Ingrese las herramientas con las que dispone para realizar la clase, Ej: Globos, ramas, espacio abierto, etc"
+                            { ...register( "tools", { required: false } ) }></textarea>
+                        </div>
                     </div>
                     <div className="mb-4">
                         <label htmlFor="temaClase" className="block text-black">Tema</label>

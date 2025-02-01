@@ -3,6 +3,7 @@ import 'dotenv/config'
 export const PORT = process.env.PORT
 export const JWT_SECRET = process.env.JWT_SECRET
 export const AI_API_KEY = process.env.AI_API_KEY
+export const INSTAGRAM_TOKEN = process.env.INSTAGRAM_TOKEN
 
 export const PAYPAL_API_CLIENT = process.env.PAYPAL_API_CLIENT
 export const PAYPAL_API_SECRET = process.env.PAYPAL_API_SECRET

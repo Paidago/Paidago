@@ -3,8 +3,12 @@ import SubjectsSelect from "../components/SubjectsSelect.jsx"
 import { useState } from "react"
 import { useForm } from 'react-hook-form'
 import { createExam } from "../api/exam.js"
+import { useAuth } from "../context/AuthContext"
+import { Link } from "react-router-dom"
+import Modal from "../components/Modal.jsx"
 
 function CreateExam(){
+    const { user } = useAuth()
     const { register, handleSubmit } = useForm()
     const [ exam, setExam ] = useState([])
 
@@ -22,7 +26,7 @@ function CreateExam(){
                 <h1>CREA UN EXAMEN!!</h1>
                 <p>Con las clases que has creado puedes crear un examen como desees</p>
 
-                <form onSubmit={onSubmit} className='container mx-auto p-8 bg-slate-200 rounded-lg shadow-md text-black'>
+                <form onSubmit={onSubmit} className={`container mx-auto p-8 bg-slate-200 rounded-lg shadow-md text-black ${!user && 'blur-lg'}`}>
                     <div>
                         <label htmlFor="name">Primero filtra las clases por asignatura para que sea mas organizado</label>
                         <SubjectsSelect className="form-select w-full mt-1 p-2 border border-black rounded-md shadow-sm" register={register} />
@@ -43,6 +47,12 @@ function CreateExam(){
                         <p>{exam}</p>
                     </div>
                 )
+            }
+
+            { !user && 
+                <Modal message='Debes haber iniciado sesion para crear tus examenes'>
+                    <Link to="/login" className="bg-purple-500 w-20 font-bold text-white py-2 px-4 rounded-md">Login</Link>
+                </Modal>
             }
         </MainLayout>
     )

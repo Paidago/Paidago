@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.routes.js'
 import activityRoutes from './routes/activity.routes.js'
 import paymentRoutes from './routes/payment.routes.js'
 import examRoutes from './routes/exam.routes.js'
+import resourceRoutes from './routes/resouce.routes.js'
 import { URL } from './config.js';
 
 const app = express();
@@ -30,6 +31,7 @@ app.use(cookieParser());
 app.use('/api', authRoutes)
 app.use('/api', activityRoutes)
 app.use('/api', examRoutes)
+app.use('/api', resourceRoutes)
 app.use(paymentRoutes)
 
 export { app }
