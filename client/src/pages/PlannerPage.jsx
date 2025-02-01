@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { createActivity } from "../api/activity"
 import Carousel from "../components/CarouselPlanner"
 import { useForm } from 'react-hook-form'
@@ -14,18 +14,10 @@ function Planner() {
     const { user } = useAuth()
     const { register, handleSubmit } = useForm()
     const [activity, setActivity] = useState([])
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState('');
 
     const handleFileChange = (event) => {
-        console.log(event.target.files[0]);
         setFile(event.target.files[0]);
-        console.log(file)
-        // Validar por tipo MIME
-        if (file.type !== "application/pdf") {
-            console.log("❌ El archivo no es un PDF válido.");
-            setFile(null);
-            return;
-        }
     };
 
     const onSubmit = handleSubmit(async info => {
@@ -71,8 +63,8 @@ function Planner() {
                             {...register("tools", { required: false })}></textarea>
                     </div>
                     <div className="p-4 bg-gray-100 rounded-xl border border-black">
-                        <h2>¿Deseas crear tu clase a partir de un pdf? Insertalo!!</h2>
-                        <input type="file" accept="application/pdf" value={''} onChange={handleFileChange} className="bg-blue-500 text-white py-2 px-4 rounded-md" />
+                        <h2 className="mb-4" >¿Deseas crear tu clase a partir de un pdf? Insertalo!!</h2>
+                        <input type="file" accept="application/pdf" onChange={handleFileChange} className="bg-blue-500 text-white py-2 px-4 rounded-md" />
                     </div>
                 </div>
                 <div className="mt-4">
