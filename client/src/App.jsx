@@ -33,12 +33,8 @@ function App() {
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/planeador" element={<PlannerPage />} />
-            <Route path="/historial-clases" element={<HistoryPage />} />
-            <Route path="/crear-examen" element={<CreateExamPage />} />
-
-            <Route element={<ProtectedRoute />}>
-              <Route path="/profile" element={<ProfilePage />} />
-            </Route>
+            {<Route element={<ProtectedRoute />}>
+             <Route path="/profile" element={<ProfilePage />} /></Route>}
             
             <Route path="/store" element={<StorePage />} />
           </Routes>
