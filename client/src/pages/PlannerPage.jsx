@@ -25,6 +25,17 @@ function Planner() {
         setActivity(res.data.generatedClass.split('\n\n').map(a => a.split(':')))
     })
 
+    // Función para resaltar palabras en mayúscula
+    const highlightUppercaseWords = (text) => {
+        return text.split(/(\b[A-ZÁÉÍÓÚÑ]{3,}\b)/g).map((part, index) =>
+            /^[A-ZÁÉÍÓÚÑ]+$/.test(part) ? (
+                <p key={index} className="font-bold text-indigo-600 mt-2">{part}</p>
+            ) : (
+                <span key={index} className="text-gray-700">{part.replace(': ', '')}</span>
+            )
+        );
+    };
+
     return (
         <MainLayout >
             <figure className="border-y-4 text-center border-black py-7 mb-7">
@@ -74,9 +85,21 @@ function Planner() {
             </form>
 
             {
-                activity.length > 0 && <Carousel >
-                    {activity.map((acti, index) => <Card key={index} title={acti[0]} description={acti[1]} />)}
-                </Carousel>
+                
+                activity.length > 0 && (<div key={activity._id} className="bg-white mt-4 shadow-md rounded-lg p-5 border mb-4">
+                    <h3 className="text-lg font-semibold text-indigo-600">{activity.topic}</h3>
+                    <p className="text-sm text-gray-500">{activity.subject}</p>
+                    <hr className="my-3" />
+                    <div className="text-gray-700 space-y-2">
+                        <p><span className="font-semibold">Metodología:</span> {activity.methodology}</p>
+                        <p><span className="font-semibold">Competencia:</span> {activity.competence}</p>
+                        <p><span className="font-semibold">Herramientas:</span> {activity.tools}</p>
+                    </div>
+                    <div className="mt-4 bg-gray-100 p-3 rounded-md">
+                        <h4 className="font font-semibold text-gray-700 mb-2">Clase Generada:</h4>
+                        <p className="text-gray-600 text-sm italic">{highlightUppercaseWords(activity.generatedClass)}</p>
+                    </div>
+                </div>)
             }
 
             {!user &&
