@@ -1,7 +1,6 @@
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import axios from '../api/axios.js'
 import { useAuth } from "../context/AuthContext"
-import Cookies from 'js-cookie'
 import { verifyToken } from "../api/auth";
 import { completeOrder } from "../api/paypal";
 
@@ -30,7 +29,7 @@ function PayPalPayment(){
           const token = window.localStorage.getItem('token')
           const res = await verifyToken(token)
           const order = await completeOrder({id: res.data.id, paymentID: response.data.id})
-          console.log(order)
+          
           window.localStorage.setItem('token', order.data.token)
           await fetchUser()
           return response

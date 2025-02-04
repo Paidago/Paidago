@@ -10,7 +10,9 @@ const subjects = [
     'Media Tecnica', 
     'Geometria', 
     'Etica y Religion', 
-    'Filosofia'
+    'Filosofia',
+    'historia',
+    'Español'
 ]
 
 function SubjectsSelect({ register, children }) {
