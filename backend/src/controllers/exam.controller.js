@@ -12,7 +12,7 @@ const generateExamFromAI = async (subject, especifications, activities) => {
         Genera un conjunto de preguntas estructuradas de acuerdo al siguiente formato:
 
         numero de la pregunta) Texto de la pregunta
-        [Opción 1, Opción 2, Opción 3, ...] (es importante que las opciones estén juntas en un arreglo y separadas por comas)
+        [Opción 1, Opción 2, Opción 3, ...] (es importante que las opciones estén juntas en un arreglo y separadas por "--")
         Respuesta correcta: [Respuesta correcta] y "\n" para separar las preguntas.
 
         Cada pregunta debe estar claramente separada, solo dame las preguntas, no agregues nada como "Examen generado" o "Aqui estan tus preguntas". 
@@ -46,7 +46,7 @@ const parseExamQuestions = (examText) => {
     questions.forEach(q => {
         const parts = q.split("\n").filter(item => item !== ''); // Divide la pregunta y las opciones
         const text = parts[0].trim(); // Extrae la pregunta
-        const options = parts[1]?.replace('[','').replace(']','').split(',').map(item => item.trim()); // Extrae las opciones
+        const options = parts[1]?.replace('[','').replace(']','').split('--').map(item => item.trim()); // Extrae las opciones
         const correctAnswer = parts[2];
     
         examQuestions.push({
