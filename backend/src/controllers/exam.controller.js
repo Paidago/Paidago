@@ -7,16 +7,41 @@ import axios from 'axios'
 const generateExamFromAI = async (subject, especifications, activities) => {
     try {
         const prompt = `
-        Conviertete en una experta en pedagogia y didactica para crear un examen sobre ${subject} de forma acertiva y precisa con las siguientes especificaciones: ${especifications}.
-        El examen debe ser basado en la siguiente informacion: ${activities.map(activity => activity.generatedClass).join(', ')}
-        Genera un conjunto de preguntas estructuradas de acuerdo al siguiente formato:
-
-        numero de la pregunta) Texto de la pregunta
-        [Opción 1, Opción 2, Opción 3, ...] (es importante que las opciones estén juntas en un arreglo y separadas por "--")
-        Respuesta correcta: [Respuesta correcta] y "\n" para separar las preguntas.
-
-        Cada pregunta debe estar claramente separada, solo dame las preguntas, no agregues nada como "Examen generado" o "Aqui estan tus preguntas". 
+        Eres una experta en pedagogía y didáctica. Tu tarea es generar un examen sobre ${subject}, asegurando que todas las preguntas cumplan con las siguientes especificaciones: ${especifications}.
+        
+        📌 **Instrucciones clave**:  
+        - **Formato obligatorio** para cada pregunta:
+          1. Número de la pregunta) Texto de la pregunta.
+          2. Opciones de respuesta: **Deben estar en un arreglo y separadas por '--' (NO por comas ',')**.
+          3. La respuesta correcta debe indicarse después con el formato exacto: **Respuesta correcta: [Respuesta correcta]**.
+        
+        📌 **Fuente del examen**:  
+        El examen debe basarse exclusivamente en la siguiente información:  
+        "${activities.map(activity => activity.generatedClass).join('. ')}"  
+        
+        ⚠️ **Reglas estrictas**:  
+        - Solo genera **preguntas de acuerdo a las especificaciones**.
+        - Genera exactamente el numero de preguntas que se te piden y **Debes estar atenta cuantas te piden de seleccion multiple y cuantas abiertas**  
+        - Respeta **estrictamente** el formato proporcionado.  
+        - **No agregues texto adicional** como "Aquí está tu examen" o "Preguntas generadas". Solo responde con las preguntas estructuradas según las reglas indicadas.  
+        
+        Ejemplo de formato correcto:  
+        Para seleccion multiple:
+        1) ¿Cuál es la capital de Francia?  
+        [París--Londres--Berlín--Madrid]  
+        Respuesta correcta: [París]  
+        
+        2) ¿Cuál es el resultado de 2 + 2?  
+        [3--4--5--6]  
+        Respuesta correcta: [4]  
+        
+        Para abiertas:
+        3) ¿Cuál es la fórmula del agua?
+        []
+        Respuesta correcta: [H2O]
+        Genera el examen respetando este mismo formato y sin añadir información extra.  
         `;
+        
 
         const data = {
             model: 'gpt-3.5-turbo-instruct',
@@ -46,7 +71,7 @@ const parseExamQuestions = (examText) => {
     questions.forEach(q => {
         const parts = q.split("\n").filter(item => item !== ''); // Divide la pregunta y las opciones
         const text = parts[0].trim(); // Extrae la pregunta
-        const options = parts[1]?.replace('[','').replace(']','').split('--').map(item => item.trim()); // Extrae las opciones
+        const options = parts[1]?.replace('[','').replace(']','').split('--').map(item => item.trim()).filter(item => item !== ''); // Extrae las opciones
         const correctAnswer = parts[2];
     
         examQuestions.push({

@@ -13,21 +13,27 @@ import SubjectsSelect from "../components/SubjectsSelect.jsx"
 function Planner() {
     const { user } = useAuth()
     const { register, handleSubmit } = useForm()
-    const [activity, setActivity] = useState([])
+    const [activity, setActivity] = useState(null)
     const [file, setFile] = useState('');
+    const [loading, setLoading] = useState(false)
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
     };
 
     const onSubmit = handleSubmit(async info => {
+        setLoading(true)
+        console.log(info)
         const res = await createActivity({ ...info, token: window.localStorage.getItem('token') })
-        setActivity(res.data.generatedClass.split('\n\n').map(a => a.split(':')))
+        setActivity(res.data)
+        console.log(res.data)
+        setLoading(false)
     })
 
     // Función para resaltar palabras en mayúscula
     const highlightUppercaseWords = (text) => {
-        return text.split(/(\b[A-ZÁÉÍÓÚÑ]{3,}\b)/g).map((part, index) =>
+        console.log(text)
+        return text?.split(/(\b[A-ZÁÉÍÓÚÑ]{3,}\b)/g).map((part, index) =>
             /^[A-ZÁÉÍÓÚÑ]+$/.test(part) ? (
                 <p key={index} className="font-bold text-indigo-600 mt-2">{part}</p>
             ) : (
@@ -85,8 +91,7 @@ function Planner() {
             </form>
 
             {
-                
-                activity.length > 0 && (<div key={activity._id} className="bg-white mt-4 shadow-md rounded-lg p-5 border mb-4">
+                activity && (<div key={activity._id} className="bg-white mt-4 shadow-md rounded-lg p-5 border mb-4">
                     <h3 className="text-lg font-semibold text-indigo-600">{activity.topic}</h3>
                     <p className="text-sm text-gray-500">{activity.subject}</p>
                     <hr className="my-3" />
@@ -97,9 +102,28 @@ function Planner() {
                     </div>
                     <div className="mt-4 bg-gray-100 p-3 rounded-md">
                         <h4 className="font font-semibold text-gray-700 mb-2">Clase Generada:</h4>
-                        <p className="text-gray-600 text-sm italic">{highlightUppercaseWords(activity.generatedClass)}</p>
+                        {
+                            activity?.sections.map((time, index) => (
+                                <div key={index} className="mb-2">
+                                    <p className="font-semibold text-indigo-600">{time.title}</p>
+                                    <p>{time.text}</p>
+                                </div>
+                            ))
+                        }
+                        {/* <p className="text-gray-600 text-sm italic">{highlightUppercaseWords(activity.generatedClass)}</p> */}
                     </div>
                 </div>)
+            }
+
+            {
+                loading && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                            <h2 className="text-xl font-bold mb-4">Generando Clase...</h2>
+                            <p className="text-gray-700">Por favor, espera un momento.</p>
+                        </div>
+                    </div>
+                )
             }
 
             {!user &&

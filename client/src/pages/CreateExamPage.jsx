@@ -6,18 +6,21 @@ import { createExam } from "../api/exam.js"
 import { useAuth } from "../context/AuthContext"
 import { Link } from "react-router-dom"
 import Modal from "../components/Modal.jsx"
+import PDF from "../components/PDF.jsx"
 
 function CreateExam() {
     const { user } = useAuth()
     const { register, handleSubmit } = useForm()
     const [exam, setExam] = useState(null)
-
+    const [loading, setLoading] = useState(false)
 
     const onSubmit = handleSubmit(async data => {
+        setLoading(true)
         console.log(data)
         const res = await createExam({ ...data, token: window.localStorage.getItem('token') })
-        console.log('RESPUESTA',res)
+        console.log('RESPUESTA', res)
         setExam(res.data)
+        setLoading(false)
     })
 
     useEffect(() => { console.log(exam) }, [exam])
@@ -73,54 +76,62 @@ function CreateExam() {
                     </div>
                 </form>
             </div>
-            <div className="max-w-3xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
-                {
-                    exam && (
-                        <>
-                            <h2 className="text-2xl font-bold text-indigo-600 text-center mb-4">📖 Examen Generado</h2>
-                            <p className="text-gray-700 text-center mb-6">
-                                Responde cada pregunta con atención. ¡Buena suerte! 🍀
-                            </p>
-                        </>
-                    )
-                }
 
-                <div className="space-y-6">
-                    {exam?.questions?.map((question, index) => (
-                        <div key={index} className="p-4 border-l-4 border-indigo-500 bg-gray-100 rounded-md shadow-sm">
-                            <p className="text-lg font-semibold text-gray-800">
-                                {question.text}
-                            </p>
-
-                            {question.type === "multiple-choice" ? (
-                                <ul className="mt-2 space-y-2">
-                                    {question.options.map((option, i) => (
-                                        <li key={i} className="flex items-center space-x-2">
-                                            <input type="radio" name={`question-${index}`} className="h-4 w-4 text-indigo-600" />
-                                            <span className="text-gray-700">{option}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <textarea
-                                    placeholder="Escribe tu respuesta aquí..."
-                                    className="w-full mt-2 p-3 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-300 resize-none"
-                                ></textarea>
-                            )}
+            {
+                loading ? (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                            <h2 className="text-xl font-bold mb-4">Generando Examen...</h2>
+                            <p className="text-gray-700">Por favor, espera un momento.</p>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ) :
+                    (
+                        <div className="max-w-3xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
+                            {
+                                exam && (
+                                    <>
+                                        <h2 className="text-2xl font-bold text-indigo-600 text-center mb-4">📖 Examen Generado</h2>
+                                        <p className="text-gray-700 text-center mb-6">
+                                            Responde cada pregunta con atención. ¡Buena suerte! 🍀
+                                        </p>
+                                    </>
+                                )
+                            }
 
-                {
-                    exam && (
-                        <div className="text-center mt-6">
-                            <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md">
-                                ✅ Enviar Respuestas
-                            </button>
+                            <div id="exam-content" className="space-y-6">
+                                {exam?.questions?.map((question, index) => (
+                                    <div key={index} className="p-4 border-l-4 border-indigo-500 bg-gray-100 rounded-md shadow-sm">
+                                        <p className="text-lg font-semibold text-gray-800">
+                                            {question.text}
+                                        </p>
+
+                                        {question.type === "multiple-choice" ? (
+                                            <ul className="mt-2 space-y-2">
+                                                {question.options.map((option, i) => (
+                                                    <li key={i} className="flex items-center space-x-2">
+                                                        <input type="radio" name={`question-${index}`} className="h-4 w-4 text-indigo-600" />
+                                                        <span className="text-gray-700">{option}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <textarea
+                                                placeholder="Escribe tu respuesta aquí..."
+                                                className="w-full mt-2 p-3 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-300 resize-none"
+                                            ></textarea>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {
+                                exam && <PDF examData={exam} />
+                            }
                         </div>
                     )
-                }
-            </div>
+            }
+
 
             <ExamDisplay exam={exam} />
 
