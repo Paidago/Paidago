@@ -10,6 +10,14 @@ import Modal from "../components/Modal.jsx"
 import MainLayout from "../Layout/MainLayout"
 import SubjectsSelect from "../components/SubjectsSelect.jsx"
 
+const methodologies = [
+    { nombre: "Constructivismo", secciones: ["Problematización", "exploración", "comprensión", "creación", "evaluación"], fuentes: [] },
+    { nombre: "Conductismo",  secciones: ["Motivación", "explicación", "simulación", "demostración", "ejercitación", "evaluación"], fuentes: [] },
+    { nombre: "Aprendizaje Basado en Proyectos (ABP)",  secciones: ["Motivación", "problema", "explicación", "hipótesis", "problematización", "conclusiones", "afirmaciones"], fuentes: [] },
+    { nombre: "Aprendizaje por Competencias",  secciones: ["Introducción", "demostración", "comprensión (didáctica del juego)", "ejercitación", "evaluación"], fuentes: [] },
+    { nombre: "Aprendizaje cooperativo",  secciones: ["Problematización", "asignación de temáticas", "diálogo de hipótesis", "conclusiones"], fuentes: [] }
+];
+
 function Planner() {
     const { user } = useAuth()
     const { register, handleSubmit } = useForm()
@@ -21,6 +29,7 @@ function Planner() {
         setFile(event.target.files[0]);
     };
 
+
     const onSubmit = handleSubmit(async info => {
         setLoading(true)
         console.log(info)
@@ -30,17 +39,28 @@ function Planner() {
         setLoading(false)
     })
 
-    // Función para resaltar palabras en mayúscula
-    const highlightUppercaseWords = (text) => {
-        console.log(text)
-        return text?.split(/(\b[A-ZÁÉÍÓÚÑ]{3,}\b)/g).map((part, index) =>
-            /^[A-ZÁÉÍÓÚÑ]+$/.test(part) ? (
-                <p key={index} className="font-bold text-indigo-600 mt-2">{part}</p>
-            ) : (
-                <span key={index} className="text-gray-700">{part.replace(': ', '')}</span>
-            )
-        );
+    const highlightText = (text) => {
+        const parts = text.split(/(\*\*[A-ZÁÉÍÓÚÑ]+\*\*)/g);
+        return parts.map((part, index) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+                return <p key={index} className="font-bold text-indigo-600">{part.slice(2, -2)}</p>;
+            }
+            return <p key={index} className="text-gray-700">{part}</p>;
+        });
     };
+  
+    const highlightUppercaseWords = (text) => {
+        const words = text.split(' ').filter(word => word !== '');
+        const metodologia = methodologies.find(m => m.nombre === activity.methodology);
+        const secciones = metodologia.secciones.map(s => s.toUpperCase().concat(':'));
+        return words.map((word, index) => {
+            if (secciones.includes(word.trim().toUpperCase())) {
+                return <p key={index} className="font-bold text-indigo-600">{word} </p>;
+            }
+            return <span key={index} className="text-gray-700">{word} </span>;
+        });
+    };
+
 
     return (
         <MainLayout >
@@ -101,16 +121,8 @@ function Planner() {
                         <p><span className="font-semibold">Herramientas:</span> {activity.tools}</p>
                     </div>
                     <div className="mt-4 bg-gray-100 p-3 rounded-md">
-                        <h4 className="font font-semibold text-gray-700 mb-2">Clase Generada:</h4>
-                        {
-                            activity?.sections.map((time, index) => (
-                                <div key={index} className="mb-2">
-                                    <p className="font-semibold text-indigo-600">{time.title}</p>
-                                    <p>{time.text}</p>
-                                </div>
-                            ))
-                        }
-                        {/* <p className="text-gray-600 text-sm italic">{highlightUppercaseWords(activity.generatedClass)}</p> */}
+                        {/* <h4 className="font font-semibold text-gray-700 mb-2">Clase Generada:</h4> */}
+                        {highlightUppercaseWords(activity.generatedClass)}
                     </div>
                 </div>)
             }

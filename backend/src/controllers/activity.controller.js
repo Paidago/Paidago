@@ -42,15 +42,23 @@ export const getActivitiesBySubject = async (req, res) => {
 }
 
 
-const parseSections = (sections) => {
-    console.log(sections)
-    const sectionsArray = sections.trim().replace('[','').replace(']','').replace('\n','').split('--')
-    console.log(sectionsArray)
-    return sectionsArray.map(time => {
-        const [title, text] = time.trim().split('->')
-        return { title: title.trim(), text: text.trim() }
-    })
-}
+
+// const cleanClass = (text, methodology) => {
+//     const metodologyFound = methodologies.find(m => m.nombre === methodology);
+
+//         metodologyFound.secciones.forEach(section => {
+//             console.log(section)
+//             if(text.toLowerCase().includes(section.toLowerCase())){
+//                 console.log('si')
+//                 text.replace(section, `${section}--`).replace('**', '').replace('\n', '').replace('�', '');
+//             }
+//         })
+
+//         console.log(text)
+//         const parts = text.split('--');
+//         console.log(parts)
+//     return text
+// }
 
 export const createActivity = async (req, res) => {
     const { methodology, topic, tools, competence, subject, file } = req.body
@@ -66,6 +74,7 @@ export const createActivity = async (req, res) => {
             texto = info.text.substring(0, 5000); // Limitar a 5000 caracteres
         }
 
+        
         const prompt = `
             📌 **Objetivo**:  
             Eres una experta en pedagogía y didáctica. Debes crear una **clase estructurada** siguiendo la metodología proporcionada.  
@@ -75,21 +84,24 @@ export const createActivity = async (req, res) => {
             El tema central de la clase es: **${topic}**.  
             Debe evaluar la siguiente competencia: **${competence}**.  
             Las únicas herramientas disponibles son: **${tools}**.  
-            Las secciones asignados para esta metodología son: **${sections}**.  
+            Los secciones asignadas para esta clase son: **${sections}**.  
 
             📌 **Especificaciones clave**:  
-            ✅ **Usa únicamente texto limpio y estructurado.**  
-            ✅ **No agregues emojis, caracteres especiales o decoraciones innecesarias.** 
-            ✅ **Las secciones deben venir en un arreglo, separadas por "--"y cada seccion debe estar separada de su explicacion por "->"**, siguiendo el siguiente formato:
-            [SECCION->explicacion--SECCION->explicacion--SECCION->explicacion]
-            ✅ **No agregues encabezados adicionales como "Clase Generada" o "Aquí tienes la clase".**  
-            ✅ Respeta estrictamente el formato y la estructura de la respuesta.  
+            -**Usa únicamente texto limpio y estructurado.**  
+            - **No agregues emojis, caracteres especiales o decoraciones innecesarias.**  
+            - **Los tiempos deben estar en MAYÚSCULAS** y deben seguir el siguiente formato:  
+            SECCION: Explicación detallada...
+            - **No agregues encabezados adicionales como "Clase Generada" o "Aquí tienes la clase".**  
+            - Respeta estrictamente el formato y la estructura de la respuesta.  
 
             Ejemplo de salida esperada:  
-            [PROBLEMATIZACIÓN->Explicación detallada--EXPLORACIÓN->Explicación detallada--APLICACIÓN->Explicación detallada...]
+            PROBLEMATIZACIÓN: Explicación detallada...  
+            EXPLORACIÓN: Explicación detallada...  
+            APLICACIÓN: Explicación detallada...  
 
             Genera la clase cumpliendo estas condiciones sin desviarte del formato solicitado.  
         `;
+
 
         const data = {
             model: 'gpt-3.5-turbo-instruct',
@@ -116,14 +128,14 @@ export const createActivity = async (req, res) => {
                 console.error('Error al realizar la solicitud a la API de OpenAI:', error.response ? error.response.data : error.message);
             });
 
-        const parsedSections = parseSections(generatedClass)
+        // generatedClass = cleanClass(generatedClass, methodology)
 
         const activity = new Activity({
             methodology,
             topic,
             tools,
             competence,
-            sections: parsedSections,
+            sections,
             user: req.userId,
             subject,
             generatedClass
