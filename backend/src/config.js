@@ -18,3 +18,15 @@ export const methodologies = [
     { nombre: "Aprendizaje por Competencias",  secciones: ["Introducción", "demostración", "comprensión (didáctica del juego)", "ejercitación", "evaluación"], fuentes: [] },
     { nombre: "Aprendizaje cooperativo",  secciones: ["Problematización", "asignación de temáticas", "diálogo de hipótesis", "conclusiones"], fuentes: [] }
 ];
+
+export const data = {
+    model: 'gpt-3.5-turbo-instruct',
+    max_tokens: 600, // Ajusta según sea necesario
+};
+
+export const config = {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${AI_API_KEY}`,
+    },
+};

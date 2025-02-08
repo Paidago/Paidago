@@ -1,6 +1,6 @@
 import { getAllActivities, getActivitiesBySubject } from "../api/activity"
 import { useForm } from 'react-hook-form'
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import MainLayout from "../Layout/MainLayout"
 import SubjectsSelect from "../components/SubjectsSelect.jsx"
 import { useAuth } from "../context/AuthContext"
@@ -12,15 +12,41 @@ function History() {
     const { register, handleSubmit } = useForm()
     const [activities, setActivities] = useState([])
 
-    // Función para resaltar palabras en mayúscula
-    const highlightUppercaseWords = (text) => {
-        return text.split(/(\b[A-ZÁÉÍÓÚÑ]{3,}\b)/g).map((part, index) =>
-            /^[A-ZÁÉÍÓÚÑ]+$/.test(part) ? (
-                <p key={index} className="font-bold text-indigo-600 mt-2">{part}</p>
-            ) : (
-                <span key={index} className="text-gray-700">{part.replace(': ', '')}</span>
-            )
-        );
+    const methodologies = [
+        { nombre: "Constructivismo", secciones: ["Problematización", "exploración", "comprensión", "creación", "evaluación"], fuentes: [] },
+        { nombre: "Conductismo",  secciones: ["Motivación", "explicación", "simulación", "demostración", "ejercitación", "evaluación"], fuentes: [] },
+        { nombre: "Aprendizaje Basado en Proyectos (ABP)",  secciones: ["Motivación", "problema", "explicación", "hipótesis", "problematización", "conclusiones", "afirmaciones"], fuentes: [] },
+        { nombre: "Aprendizaje por Competencias",  secciones: ["Introducción", "demostración", "comprensión (didáctica del juego)", "ejercitación", "evaluación"], fuentes: [] },
+        { nombre: "Aprendizaje cooperativo",  secciones: ["Problematización", "asignación de temáticas", "diálogo de hipótesis", "conclusiones"], fuentes: [] }
+    ];
+
+    const highlightUppercaseWords = (activity) => {
+        const words = activity.generatedClass.replace(/\n+/g, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/:/g, ': ')
+        .replace(/\[/g, ' ')
+        .replace(/\]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .replace(/[\u{1F600}-\u{1F64F}]/gu, '')
+        .replace(/�/g, '')
+        .trim()
+        .split(' ').filter(word => word !== '');
+        
+        const metodologia = methodologies.find(m => m.nombre === activity.methodology);
+        const secciones = metodologia.secciones.map(s => s.toUpperCase().concat(':'));
+
+        const palabras = ['DIÁLOGO','DE','HIPÓTESIS:', 'ASIGNACIÓN', 'TEMÁTICAS:', 'DIDÁCTICA', 'DEL', 'JUEGO:']
+        
+        return words.map((word, index) => {
+            if (secciones.includes(word.trim())) {
+                return <p key={index} className="font-bold text-indigo-600">{word} </p>;
+            }
+            if(palabras.includes(word.trim())){
+                if (word.includes(':')) return <p key={index} className="font-bold text-indigo-600">{word} </p>;
+                return <span key={index} className="font-bold text-indigo-600">{word} </span>;
+            }
+            return <span key={index} className="text-gray-700">{word} </span>;
+        });
     };
 
     const onSubmit = handleSubmit(async ({ subject }) => {
@@ -36,19 +62,6 @@ function History() {
             console.log(err)
         }
     })
-
-    const getActivities = async () => {
-        try {
-            const res = await getAllActivities(window.localStorage.getItem('token'))
-            setActivities(res.data)
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-    useEffect(() => {
-        if (user) getActivities()
-    }, [])
 
     return (
         <MainLayout>
@@ -72,7 +85,7 @@ function History() {
                         </div>
                         <div className="mt-4 bg-gray-100 p-3 rounded-md">
                             <h4 className="font font-semibold text-gray-700 mb-2">Clase Generada:</h4>
-                            <p className="text-gray-600 text-sm italic">{highlightUppercaseWords(activity.generatedClass)}</p>
+                            <p className="text-gray-600 text-sm italic">{highlightUppercaseWords(activity)}</p>
                         </div>
                     </div>
                 ))

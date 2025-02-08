@@ -1,4 +1,4 @@
-import { AI_API_KEY } from '../config.js'
+import { AI_API_KEY, config, data } from '../config.js'
 import Activity from '../models/activity.model.js'
 import Exam from '../models/exam.model.js'
 import axios from 'axios'
@@ -43,21 +43,8 @@ const generateExamFromAI = async (subject, especifications, activities) => {
         `;
         
 
-        const data = {
-            model: 'gpt-3.5-turbo-instruct',
-            prompt,
-            max_tokens: 800, // Ajusta según sea necesario
-        };
-
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${AI_API_KEY}`,
-            }
-        };
-
         // Realiza la solicitud a la API de OpenAI
-        const response = await axios.post('https://api.openai.com/v1/completions', data, config);
+        const response = await axios.post('https://api.openai.com/v1/completions', {...data, prompt}, config);
         return response.data.choices[0].text;
     } catch (error) {
         throw new Error('Error al generar el examen desde la API: ' + error.message);

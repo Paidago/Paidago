@@ -1,4 +1,4 @@
-import { AI_API_KEY, methodologies } from '../config.js'
+import { AI_API_KEY, config, data, methodologies } from '../config.js'
 import Activity from '../models/activity.model.js'
 import axios from 'axios'
 import pdf from 'pdf-parse'
@@ -40,25 +40,6 @@ export const getActivitiesBySubject = async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 }
-
-
-
-// const cleanClass = (text, methodology) => {
-//     const metodologyFound = methodologies.find(m => m.nombre === methodology);
-
-//         metodologyFound.secciones.forEach(section => {
-//             console.log(section)
-//             if(text.toLowerCase().includes(section.toLowerCase())){
-//                 console.log('si')
-//                 text.replace(section, `${section}--`).replace('**', '').replace('\n', '').replace('�', '');
-//             }
-//         })
-
-//         console.log(text)
-//         const parts = text.split('--');
-//         console.log(parts)
-//     return text
-// }
 
 export const createActivity = async (req, res) => {
     const { methodology, topic, tools, competence, subject, file } = req.body
@@ -103,23 +84,10 @@ export const createActivity = async (req, res) => {
         `;
 
 
-        const data = {
-            model: 'gpt-3.5-turbo-instruct',
-            prompt,
-            max_tokens: 400, // Ajusta según sea necesario
-        };
-
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${AI_API_KEY}`,
-            },
-        };
-
         let generatedClass = ''
 
         // Realiza la solicitud a la API de OpenAI usando Axios
-        await axios.post('https://api.openai.com/v1/completions', data, config)
+        await axios.post('https://api.openai.com/v1/completions', {...data, prompt}, config)
             .then(response => {
                 console.log('Respuesta de la API de OpenAI:', response.data.choices[0].text);
                 generatedClass = response.data.choices[0].text

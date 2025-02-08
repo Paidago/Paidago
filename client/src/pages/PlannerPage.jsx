@@ -38,24 +38,31 @@ function Planner() {
         console.log(res.data)
         setLoading(false)
     })
-
-    const highlightText = (text) => {
-        const parts = text.split(/(\*\*[A-ZÁÉÍÓÚÑ]+\*\*)/g);
-        return parts.map((part, index) => {
-            if (part.startsWith('**') && part.endsWith('**')) {
-                return <p key={index} className="font-bold text-indigo-600">{part.slice(2, -2)}</p>;
-            }
-            return <p key={index} className="text-gray-700">{part}</p>;
-        });
-    };
   
     const highlightUppercaseWords = (text) => {
-        const words = text.split(' ').filter(word => word !== '');
+        const words = text.replace(/\n+/g, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/:/g, ': ')
+        .replace(/\[/g, ' ')
+        .replace(/\]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .replace(/[\u{1F600}-\u{1F64F}]/gu, '')
+        .replace(/�/g, '')
+        .trim()
+        .split(' ').filter(word => word !== '');
+        
         const metodologia = methodologies.find(m => m.nombre === activity.methodology);
         const secciones = metodologia.secciones.map(s => s.toUpperCase().concat(':'));
+
+        const palabras = ['DIÁLOGO','DE','HIPÓTESIS:', 'ASIGNACIÓN', 'TEMÁTICAS:', 'DIDÁCTICA', 'DEL', 'JUEGO:']
+        
         return words.map((word, index) => {
-            if (secciones.includes(word.trim().toUpperCase())) {
+            if (secciones.includes(word.trim())) {
                 return <p key={index} className="font-bold text-indigo-600">{word} </p>;
+            }
+            if(palabras.includes(word.trim())){
+                if (word.includes(':')) return <p key={index} className="font-bold text-indigo-600">{word} </p>;
+                return <span key={index} className="font-bold text-indigo-600">{word} </span>;
             }
             return <span key={index} className="text-gray-700">{word} </span>;
         });
