@@ -12,9 +12,21 @@ export const URL = process.env.NODE_ENV === 'dev' ? process.env.DEV_URL : proces
 export const DB_URL = process.env.NODE_ENV === 'dev' ? process.env.MONGO_DB_URI_TEST : process.env.MONGO_DB_URI
 
 export const methodologies = [
-    { nombre: "Constructivismo", tiempos: ["Problematización", "exploración", "comprensión", "creación", "evaluación"], fuentes: [] },
-    { nombre: "Conductismo",  tiempos: ["Motivación", "explicación", "simulación", "demostración", "ejercitación", "evaluación"], fuentes: [] },
-    { nombre: "Aprendizaje Basado en Proyectos (ABP)",  tiempos: ["Motivación", "problema", "explicación", "hipótesis", "problematización", "conclusiones", "afirmaciones"], fuentes: [] },
-    { nombre: "Aprendizaje por Competencias",  tiempos: ["Introducción", "demostración", "comprensión (didáctica del juego)", "ejercitación", "evaluación"], fuentes: [] },
-    { nombre: "Aprendizaje cooperativo",  tiempos: ["Problematización", "asignación de temáticas", "diálogo de hipótesis", "conclusiones"], fuentes: [] }
+    { nombre: "Constructivismo", secciones: ["Problematización", "exploración", "comprensión", "creación", "evaluación"], fuentes: [] },
+    { nombre: "Conductismo",  secciones: ["Motivación", "explicación", "simulación", "demostración", "ejercitación", "evaluación"], fuentes: [] },
+    { nombre: "Aprendizaje Basado en Proyectos (ABP)",  secciones: ["Motivación", "problema", "explicación", "hipótesis", "problematización", "conclusiones", "afirmaciones"], fuentes: [] },
+    { nombre: "Aprendizaje por Competencias",  secciones: ["Introducción", "demostración", "comprensión (didáctica del juego)", "ejercitación", "evaluación"], fuentes: [] },
+    { nombre: "Aprendizaje cooperativo",  secciones: ["Problematización", "asignación de temáticas", "diálogo de hipótesis", "conclusiones"], fuentes: [] }
 ];
+
+export const data = {
+    model: 'gpt-3.5-turbo-instruct',
+    max_tokens: 600, // Ajusta según sea necesario
+};
+
+export const config = {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${AI_API_KEY}`,
+    },
+};

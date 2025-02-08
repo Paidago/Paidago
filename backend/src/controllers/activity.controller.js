@@ -1,4 +1,4 @@
-import { AI_API_KEY, methodologies } from '../config.js'
+import { AI_API_KEY, config, data, methodologies } from '../config.js'
 import Activity from '../models/activity.model.js'
 import axios from 'axios'
 import pdf from 'pdf-parse'
@@ -45,48 +45,49 @@ export const createActivity = async (req, res) => {
     const { methodology, topic, tools, competence, subject, file } = req.body
 
     try {
-        const metodologiaEncontrada = methodologies.find( m => m.nombre === methodology );
-		const tiempos = new Intl.ListFormat("es").format( metodologiaEncontrada.tiempos.map(tiempo => tiempo.toUpperCase().concat(':') ) )
+        const metodologiaEncontrada = methodologies.find(m => m.nombre === methodology);
+        const sections = new Intl.ListFormat("es").format(metodologiaEncontrada.secciones.map(section => section.toUpperCase().concat(':')))
 
         let texto = ''
 
-        if (file){
+        if (file) {
             const info = await pdf(req.file.buffer);
             texto = info.text.substring(0, 5000); // Limitar a 5000 caracteres
         }
 
-        const prompt = `
-            \n¿Que vas a hacer?
-            Conviertete en una experta en pedagogia y didactica para crear una clase basada en la ${file ? 'informacion de este PDF: ' + texto + '\nRespetando la metodologia' + methodology +'\n' : 'metodologia: ' + methodology + '\n'}.\n
-            Debe ser acerca del tema ${ topic }.\n
-            Debe evaluar la siguiente competencia: ${ competence }.\n
-            Ten en cuenta que solo tienes acceso a las siguientes herramientas: ${ tools }.\n
-            Cada metodologia tiene sus respectivos tiempos, en el caso de esta sus tiempos son: ${ tiempos }
-
-            Especificaciones:
-            \n- Se muy especifica a la hora de explicar.
-            \n- Entregame la clase aplicando el siguiente formato: <El nombre de cada tiempo>:<Tu respuesta>
-            \n- Solo dame lo que te pido, no añadas mas
-`
-
-
-        const data = {
-            model:'gpt-3.5-turbo-instruct',
-            prompt,
-            max_tokens: 400, // Ajusta según sea necesario
-        };
         
-        const config = {
-            headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${AI_API_KEY}`,
-            },
-        };
+        const prompt = `
+            📌 **Objetivo**:  
+            Eres una experta en pedagogía y didáctica. Debes crear una **clase estructurada** siguiendo la metodología proporcionada.  
+
+            📖 **Detalles**:  
+            ${file ? `La clase debe basarse en el siguiente PDF: "${texto}". Respeta estrictamente la metodología ${methodology}.` : `Debes seguir la metodología: ${methodology}.`}  
+            El tema central de la clase es: **${topic}**.  
+            Debe evaluar la siguiente competencia: **${competence}**.  
+            Las únicas herramientas disponibles son: **${tools}**.  
+            Los secciones asignadas para esta clase son: **${sections}**.  
+
+            📌 **Especificaciones clave**:  
+            -**Usa únicamente texto limpio y estructurado.**  
+            - **No agregues emojis, caracteres especiales o decoraciones innecesarias.**  
+            - **Los tiempos deben estar en MAYÚSCULAS** y deben seguir el siguiente formato:  
+            SECCION: Explicación detallada...
+            - **No agregues encabezados adicionales como "Clase Generada" o "Aquí tienes la clase".**  
+            - Respeta estrictamente el formato y la estructura de la respuesta.  
+
+            Ejemplo de salida esperada:  
+            PROBLEMATIZACIÓN: Explicación detallada...  
+            EXPLORACIÓN: Explicación detallada...  
+            APLICACIÓN: Explicación detallada...  
+
+            Genera la clase cumpliendo estas condiciones sin desviarte del formato solicitado.  
+        `;
+
 
         let generatedClass = ''
-        
+
         // Realiza la solicitud a la API de OpenAI usando Axios
-        await axios.post('https://api.openai.com/v1/completions', data, config)
+        await axios.post('https://api.openai.com/v1/completions', {...data, prompt}, config)
             .then(response => {
                 console.log('Respuesta de la API de OpenAI:', response.data.choices[0].text);
                 generatedClass = response.data.choices[0].text
@@ -95,18 +96,21 @@ export const createActivity = async (req, res) => {
                 console.error('Error al realizar la solicitud a la API de OpenAI:', error.response ? error.response.data : error.message);
             });
 
+        // generatedClass = cleanClass(generatedClass, methodology)
+
         const activity = new Activity({
             methodology,
             topic,
             tools,
             competence,
+            sections,
             user: req.userId,
             subject,
             generatedClass
         })
-    
+
         const activitySaved = await activity.save()
-        
+
         res.status(201).json({
             id: activitySaved._id,
             methodology: activitySaved.methodology,
@@ -114,12 +118,13 @@ export const createActivity = async (req, res) => {
             tools: activitySaved.tools,
             competence: activitySaved.competence,
             user: activitySaved.user,
+            sections: activitySaved.sections,
             subject: activitySaved.subject,
             generatedClass: activitySaved.generatedClass,
             createdAt: activitySaved.createdAt,
             updatedAt: activitySaved.updatedAt
         })
-        
+
     } catch (error) {
         res.status(400).json({
             message: error.message
