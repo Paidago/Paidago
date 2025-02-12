@@ -11,7 +11,7 @@ const subjects = [
     'Geometria', 
     'Etica y Religion', 
     'Filosofia',
-    'historia',
+    'Historia',
     'Español'
 ]
 

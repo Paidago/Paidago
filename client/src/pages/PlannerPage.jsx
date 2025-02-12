@@ -106,10 +106,10 @@ function Planner() {
                         <textarea className="form-input w-full mt-1 p-2 border border-black rounded-md shadow-sm resize-none min-h-20 placeholder:text-black" placeholder="Ingrese las herramientas con las que dispone para realizar la clase, Ej: Globos, ramas, espacio abierto, etc"
                             {...register("tools", { required: false })}></textarea>
                     </div>
-                    <div className="p-4 bg-gray-100 rounded-xl border border-black">
+                    {/* <div className="p-4 bg-gray-100 rounded-xl border border-black">
                         <h2 className="mb-4" >¿Deseas crear tu clase a partir de un pdf? Insertalo!!</h2>
                         <input type="file" accept="application/pdf" onChange={handleFileChange} className="bg-blue-500 text-white py-2 px-4 rounded-md" />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="mt-4">
                     <button id="btn-generador" className="bg-blue-500 text-white py-2 px-4 rounded-md">Generar clase</button>

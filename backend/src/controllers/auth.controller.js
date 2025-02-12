@@ -14,10 +14,12 @@ export const register = async (req, res) => {
         if (userFound) return res.status(401).json(['El email ya está registrado'])
 
         const passwordHash = await bcrypt.hash(password, 10)
+        const firstLetter = username.trim().charAt(0).toUpperCase()
         const user = new User({
             username,
             email,
             password: passwordHash,
+            profilePicture: `https://ui-avatars.com/api/?name=${firstLetter}`,
             paymentID: ''
         })
 
@@ -31,6 +33,7 @@ export const register = async (req, res) => {
             username: userSaved.username,
             email: userSaved.email,
             paymentID: userSaved.paymentID,
+            profilePicture: userSaved.profilePicture,
             token,
             createdAt: userSaved.createdAt,
             updatedAt: userSaved.updatedAt

@@ -1,39 +1,50 @@
-import NavBar from "../components/NavBar"
-import '../style/home.css'
-import Footer from "../components/Footer"
-function Profile(){
+import { useState } from "react";
+import MainLayout from "../Layout/MainLayout";
+import { useAuth } from "../context/AuthContext";
 
-    return(
-        <div className="flex flex-col min-h-screen justify-between">
-        <NavBar />
-        <div id="content" className="mt-7">
-          <div id="primary" className="content-area flex-grow">
-            <main className="w-full flex items-center justify-center">
-              <article className="md:w-3/4 bg-slate-100 p-6 mb-10 flex-col items-center justify-center" >
+function ProfilePage() {
+  const { user } = useAuth()
 
-                <div id="img" className="relative w-full h-96 ">
-               
-                <img src="https://www.microsoft.com/es-xl/events-hub/uploads/3adzs3qz20owgw40gw04.png" className="w-full lg:w-full lg:h-full "></img>
-                 
-             
-                <img src="https://affinitaslegal.com/wp-content/uploads/2023/10/imagen-perfil-sin-foto.jpg" className="sm:mx-auto rounded-full w-52 h-52 lg:transform -translate-x-1 -translate-y-1/2 ml-5 "></img>
-                </div>              
-                <div id="info" className="pt-24"><h1 className="text-center lg:text-left text-black text-2xl font-bold py-5">
-                  Hamilton Damian Lopez Gutierrez
-                </h1>
-                <p className="text-center lg:text-left">                  
-                  hamilton@gmail.com
-                </p>
-                </div>
-                
-               
-              </article>
-            </main>
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setUser({ ...user, profilePicture: imageUrl });
+    }
+  };
+
+  return (
+    <MainLayout>
+      <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
+          Mi Perfil
+        </h2>
+        <div className="flex flex-col items-center">
+          {/* Imagen de perfil */}
+          <div className="w-40 h-40 flex items-center justify-center bg-gray-200 text-gray-500 text-center">
+            <img
+              src={user.profilePicture}
+              className="w-full h-full object-cover"
+              onError={(e) => e.target.style.display = 'none'}
+            />
+            <span className="absolute">Foto de perfil</span>
           </div>
-        </div>
-        <Footer />
-      </div>
-    )
-}
 
-export default Profile
+
+          {/* Datos del usuario */}
+          <div className="mt-4 text-center">
+            <h3 className="text-xl font-medium text-gray-700">{user.name}</h3>
+            <p className="text-gray-500">{user.email}</p>
+          </div>
+
+          {/* Botón para editar */}
+          <button className="mt-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+            Editar Perfil
+          </button>
+        </div>
+      </div>
+    </MainLayout>
+  );
+};
+
+export default ProfilePage;
