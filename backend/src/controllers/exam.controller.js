@@ -1,4 +1,4 @@
-import { AI_API_KEY, config, data } from '../config.js'
+import { config, data } from '../config.js'
 import Activity from '../models/activity.model.js'
 import Exam from '../models/exam.model.js'
 import axios from 'axios'

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createExam } from "../api/exam.js";
+import { createIcfes } from "../api/icfes.js";
 import { useForm } from 'react-hook-form';
 import { useAuth } from "../context/AuthContext.jsx";
 import { Link } from "react-router-dom";
@@ -11,14 +11,14 @@ import PayPalPayment from '../components/PayPalPayment.jsx';
 function ICFESPage() {
     const { user } = useAuth();
     const { register, handleSubmit } = useForm();
-    const [exam, setExam] = useState(null);
+    const [icfes, setIcfes] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const onSubmit = handleSubmit(async info => {
         setLoading(true);
         console.log(info);
-        const res = await createExam({ ...info, token: window.localStorage.getItem('token') });
-        setExam(res.data);
+        const res = await createIcfes({ ...info, token: window.localStorage.getItem('token') });
+        setIcfes(res.data);
         console.log(res.data);
         setLoading(false);
     });
@@ -38,11 +38,11 @@ function ICFESPage() {
                     </div>
                     <div className="mb-4">
                         <label htmlFor="cantidadEnunciados" className="block text-black">Cantidad de Enunciados</label>
-                        <input type="number" className="form-input w-full mt-1 p-2 border border-black rounded-md shadow-sm" min="1" max="3" {...register("numStatements", { required: true })} />
+                        <input type="number" className="form-input w-full mt-1 p-2 border border-black rounded-md shadow-sm" min="1" max="3" {...register("questionCount", { required: true })} />
                     </div>
                     <div className="mb-4">
                         <label htmlFor="parrafoBase" className="block text-black">Párrafo Base</label>
-                        <textarea className="form-input w-full mt-1 p-2 border border-black rounded-md shadow-sm resize-none min-h-20 placeholder:text-black" placeholder="Ingrese el párrafo del cual se generarán las preguntas" {...register("baseParagraph", { required: true })}></textarea>
+                        <textarea className="form-input w-full mt-1 p-2 border border-black rounded-md shadow-sm resize-none min-h-20 placeholder:text-black" placeholder="Ingrese el párrafo del cual se generarán las preguntas" {...register("paragraph", { required: true })}></textarea>
                     </div>
                 </div>
                 <div className="mt-4">
@@ -51,16 +51,36 @@ function ICFESPage() {
             </form>
 
             {
-                exam && (
-                    <div key={exam._id} className="bg-white mt-4 shadow-md rounded-lg p-5 border mb-4">
-                        <h3 className="text-lg font-semibold text-indigo-600">{exam.subject}</h3>
-                        <p className="text-sm text-gray-500">{exam.competence}</p>
+                icfes && (
+                    <div key={icfes._id} className="bg-white mt-4 shadow-md rounded-lg p-5 border mb-4">
+                        <h3 className="text-lg font-semibold text-indigo-600">{icfes.subject}</h3>
+                        <p className="text-sm text-gray-500">{icfes.competence}</p>
                         <hr className="my-3" />
                         <div className="text-gray-700 space-y-2">
-                            <p><span className="font-semibold">Párrafo Base:</span> {exam.baseParagraph}</p>
-                            <p><span className="font-semibold">Cantidad de Enunciados:</span> {exam.numStatements}</p>
+                            <p><span className="font-semibold">Párrafo Base:</span> {icfes.paragraph}</p>
+                            <p><span className="font-semibold">Cantidad de Enunciados:</span> {icfes.questionCount}</p>
+                        </div>
+
+                        <div id="exam-content" className="space-y-6">
+                            {icfes?.questions?.map((question, index) => (
+                                <div key={index} className="p-4 border-l-4 border-indigo-500 bg-gray-100 rounded-md shadow-sm">
+                                    <p className="text-lg font-semibold text-gray-800">
+                                        {question.statement}
+                                    </p>
+                                    <ul className="mt-2 space-y-2">
+                                        {question.options.map((option, i) => (
+                                            <li key={i} className="flex items-center space-x-2">
+                                                <input type="radio" name={`question-${index}`} className="h-4 w-4 text-indigo-600" />
+                                                <span className="text-gray-700">{option}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                </div>
+                            ))}
                         </div>
                     </div>
+
                 )
             }
 
