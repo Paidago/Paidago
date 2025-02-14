@@ -12,6 +12,7 @@ import ProtectedRoute from './ProtectedRoute'
 import HistoryPage from './pages/HistoryPage'
 import CreateExamPage from './pages/CreateExamPage'
 import QuotesPage from './pages/QuotesPage'
+import ICFESPage from './pages/ICFESPage'
 import { AuthProvider } from './context/AuthContext'
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
@@ -36,6 +37,7 @@ function App() {
             <Route path="/planeador" element={<PlannerPage />} />
             <Route path="/historial-clases" element={<HistoryPage />} />
             <Route path="/crear-examen" element={<CreateExamPage />} />
+            <Route path="/crear-icfes" element={<ICFESPage />} />
             <Route path="/citas" element={<QuotesPage />} />
 
             <Route element={<ProtectedRoute />}>

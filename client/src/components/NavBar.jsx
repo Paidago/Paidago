@@ -69,6 +69,7 @@ function NavBar() {
                                     <Link to='/planeador' className="p-4 text-sm leading-normal text-blue-gray-500/80">Planeador</Link>
                                     <Link to='/historial-clases' className="p-4 text-sm leading-normal text-blue-gray-500/80">Historial de clases</Link>
                                     <Link to='/crear-examen' className="p-4 text-sm leading-normal text-blue-gray-500/80">Crear examen</Link>
+                                    <Link to='/crear-icfes' className="p-4 text-sm leading-normal text-blue-gray-500/80">Crear ICFES</Link>
                                 </div>
                             </div>
                             <div className="relative ml-3">

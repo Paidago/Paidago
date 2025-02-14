@@ -12,7 +12,14 @@ const subjects = [
     'Etica y Religion', 
     'Filosofia',
     'Historia',
-    'Español'
+    'Español',
+    'Ingles',
+    'Tecnologia',
+    'Quimica',
+    'Biologia',
+    'Geografia',
+    'Educacion Ciudadana',
+    'Educacion Ambiental'
 ]
 
 function SubjectsSelect({ register, children }) {
