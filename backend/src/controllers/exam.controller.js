@@ -57,12 +57,12 @@ const parseExamQuestions = (examText) => {
     const questions = examText.trim().split('\n\n')// Divide por número de pregunta
     questions.forEach(q => {
         const parts = q.split("\n").filter(item => item !== ''); // Divide la pregunta y las opciones
-        const text = parts[0].trim(); // Extrae la pregunta
+        const statement = parts[0].trim(); // Extrae la pregunta
         const options = parts[1]?.replace('[','').replace(']','').split('--').map(item => item.trim()).filter(item => item !== ''); // Extrae las opciones
         const correctAnswer = parts[2];
     
         examQuestions.push({
-            text,
+            statement,
             type: options? 'multiple-choice' : 'open-ended',
             options,
             correctAnswer,

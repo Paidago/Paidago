@@ -7,6 +7,7 @@ import Modal from "../components/Modal.jsx";
 import MainLayout from "../Layout/MainLayout.jsx";
 import SubjectsSelect from "../components/SubjectsSelect.jsx";
 import PayPalPayment from '../components/PayPalPayment.jsx';
+import PDF from "../components/PDF.jsx";
 
 function ICFESPage() {
     const { user } = useAuth();
@@ -82,6 +83,10 @@ function ICFESPage() {
                     </div>
 
                 )
+            }
+
+            {
+                icfes && <PDF examData={icfes} />
             }
 
             {

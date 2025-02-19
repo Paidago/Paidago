@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 const questionSchema = new mongoose.Schema({
-    text: { type: String, required: true, trim: true },
+    statement: { type: String, required: true, trim: true },
     type: { type: String, enum: ['multiple-choice', 'open-ended'], required: true },
     options: { type: [String], default: [] }, // Solo si es opción múltiple
     correctAnswer: { type: String, trim: true } // Para evaluar respuestas

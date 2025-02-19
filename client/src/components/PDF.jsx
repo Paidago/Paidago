@@ -23,10 +23,10 @@ function PDF({ examData }) {
 
         // 🏷️ 1. Agregar el logo si existe
         if (formData.logo) {
-            pdf.addImage(formData.logo, formData.imgType === 'image/png' ? "PNG" : "JPG", 170, 5, 30, 30); // (Imagen, Formato, X, Y, Ancho, Alto)
+            pdf.addImage(formData.logo, formData.imgType === 'image/png' ? "PNG" : "JPG", 170, 5, 30, 30);
         }
 
-        // 🏷️ 2. Encabezado (Aparecerá en la primera página)
+        // 🏷️ 2. Encabezado
         pdf.setFontSize(18);
         pdf.text(formData.instituteName || "Instituto", 105, yOffset, { align: "center" });
 
@@ -37,15 +37,32 @@ function PDF({ examData }) {
         pdf.setFontSize(12);
         pdf.text("Nombre del estudiante: ____________________________", 20, (yOffset += 10));
 
-        pdf.line(10, (yOffset += 5), 200, yOffset); // Línea separadora
+        pdf.line(10, (yOffset += 5), 200, yOffset);
         yOffset += 15;
 
-        // 🏷️ 3. Preguntas y Opciones con salto de página si es necesario
+        // 🏷️ 3. Párrafo base con el formato deseado
+        if (examData.paragraph) {
+            pdf.setFontSize(12);
+            pdf.text("Párrafo base", 20, yOffset); // Encabezado del párrafo
+            yOffset += 6;
+
+            pdf.setFontSize(11);
+            const paragraphLines = pdf.splitTextToSize(examData.paragraph, 180);
+            const paragraphHeight = paragraphLines.length * 6;
+
+            if (yOffset + paragraphHeight > maxHeight) {
+                pdf.addPage();
+                yOffset = 20;
+            }
+
+            pdf.text(paragraphLines, 20, yOffset);
+            yOffset += paragraphHeight;
+        }
+
+        // 🏷️ 4. Preguntas y Opciones con salto de página
         examData.questions.forEach((q, index) => {
             pdf.setFontSize(11);
-
-            // 📌 Ajuste de texto para preguntas largas
-            const questionLines = pdf.splitTextToSize(q.text, 180);
+            const questionLines = pdf.splitTextToSize(q.statement, 180);
             const questionHeight = questionLines.length * 6;
 
             if (yOffset + questionHeight > maxHeight) {
@@ -55,7 +72,6 @@ function PDF({ examData }) {
             pdf.text(questionLines, 10, yOffset);
             yOffset += questionHeight + 3;
 
-            // 📌 Ajuste de texto para opciones largas
             q.options.forEach((option, i) => {
                 pdf.setFontSize(10);
                 const optionText = `${String.fromCharCode(97 + i)}) ${option}`;
@@ -70,12 +86,13 @@ function PDF({ examData }) {
                 yOffset += optionHeight + 3;
             });
 
-            yOffset += 12; // Más espacio entre bloques de preguntas
+            yOffset += 12;
         });
 
         pdf.save("Examen.pdf");
         setShowModal(false);
     };
+
 
 
     const handleImageUpload = (event) => {
