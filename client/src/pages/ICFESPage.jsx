@@ -45,9 +45,14 @@ function ICFESPage() {
                         <label htmlFor="parrafoBase" className="block text-black">Párrafo Base</label>
                         <textarea className="form-input w-full mt-1 p-2 border border-black rounded-md shadow-sm resize-none min-h-20 placeholder:text-black" placeholder="Ingrese el párrafo del cual se generarán las preguntas" {...register("paragraph", { required: true })}></textarea>
                     </div>
-                </div>
-                <div className="mt-4">
-                    <button id="btn-generador" className="bg-blue-500 text-white py-2 px-4 rounded-md">Generar Examen</button>
+                    <div className="mt-4">
+                        <button id="btn-generador" className="bg-blue-500 text-white py-2 px-4 rounded-md">Generar Examen</button>
+                    </div>
+                    <div className="mt-4">
+                        <Link to='/icfes/preguntas'>
+                            <button id="btn-generador" className="bg-blue-500 text-white py-2 px-4 rounded-md">Mira las preguntas que han creado tus compañeros docentes</button>
+                        </Link>
+                    </div>
                 </div>
             </form>
 

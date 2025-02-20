@@ -15,6 +15,7 @@ import QuotesPage from './pages/QuotesPage'
 import ICFESPage from './pages/ICFESPage'
 import { AuthProvider } from './context/AuthContext'
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import BancoDePreguntasPage from './pages/BancoDePreguntasPage'
 
 const initialOptions = {
   clientId: "AXeTD9HKO9Qf2wXzOyjmqmDbw0DF9SHjKBzRww9IVSRqZzXY0C48ErLiwdD8l-PhgR8bJU0cneaES7BM",
@@ -39,6 +40,7 @@ function App() {
             <Route path="/crear-examen" element={<CreateExamPage />} />
             <Route path="/crear-icfes" element={<ICFESPage />} />
             <Route path="/citas" element={<QuotesPage />} />
+            <Route path="/icfes/preguntas" element={<BancoDePreguntasPage />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/profile" element={<ProfilePage />} />

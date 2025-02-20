@@ -27,13 +27,11 @@ export const getIcfesById = async (req, res) => {
 
 export const getIcfesBySubject = async (req, res) => {
     try {
-        const icfes = await Icfes.find({ subject: req.body.subject, createdBy: req.userId })
-
-        if (icfes) {
-            res.status(200).json(icfes)
-        } else {
-            res.status(404).json({ message: 'No se encontraron examenes' })
-        }
+        const {  subject } = req.body
+        console.log(subject)
+        const icfes = await Icfes.find({ subject })
+        return res.status(200).json(icfes)
+        
     } catch (error) {
         res.status(500).json({ message: error.message })
     }

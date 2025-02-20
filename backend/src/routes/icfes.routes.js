@@ -8,7 +8,7 @@ router.get('/icfes', authRequired, getAllIcfes)
 
 router.get('/icfes/:id', authRequired, getIcfesById)
 
-router.get('/icfesBySubject', authRequired, getIcfesBySubject)
+router.post('/icfesBySubject', authRequired, getIcfesBySubject)
 
 router.post('/createIcfes', authRequired, createIcfes)
 
