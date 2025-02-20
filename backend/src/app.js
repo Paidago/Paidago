@@ -9,6 +9,7 @@ import activityRoutes from './routes/activity.routes.js'
 import paymentRoutes from './routes/payment.routes.js'
 import examRoutes from './routes/exam.routes.js'
 import resourceRoutes from './routes/resource.routes.js'
+import icfesRoutes from './routes/icfes.routes.js'
 import { URL } from './config.js';
 
 const app = express();
@@ -32,6 +33,7 @@ app.use('/api', authRoutes)
 app.use('/api', activityRoutes)
 app.use('/api', examRoutes)
 app.use('/api', resourceRoutes)
+app.use('/api', icfesRoutes)
 app.use(paymentRoutes)
 
 export { app }

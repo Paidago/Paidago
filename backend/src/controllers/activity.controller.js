@@ -1,4 +1,4 @@
-import { AI_API_KEY, config, data, methodologies } from '../config.js'
+import { config, data, methodologies } from '../config.js'
 import Activity from '../models/activity.model.js'
 import axios from 'axios'
 import pdf from 'pdf-parse'
