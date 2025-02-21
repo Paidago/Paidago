@@ -1,13 +1,25 @@
-import React, { useState, useEffect } from "react";
-import ReactFlow, { MiniMap, Controls, Background } from "reactflow";
+import React, { useState, useCallback } from "react";
+import ReactFlow, {
+  MiniMap,
+  Controls,
+  Background,
+  addEdge,
+  useNodesState,
+  useEdgesState,
+} from "reactflow";
 import "reactflow/dist/style.css";
-import * as d3 from "d3";
+import { v4 as uuidv4 } from "uuid";
 
-function MapaMental () {
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
+const initialNodes = [
+  {
+    id: "1",
+    data: { label: "Idea Principal" },
+    position: { x: 250, y: 5 },
+    style: { backgroundColor: "#f0f0f0", padding: 10, borderRadius: 5 },
+  },
+];
 
-  const data = {
+const data = {
     nodes: [
       { id: "1", type: "input", data: { label: "Las capitales de los países" }, position: { x: 400, y: 50 } },
       { id: "2", data: { label: "Problematización" }, position: { x: 100, y: 150 } },
@@ -25,36 +37,49 @@ function MapaMental () {
     ]
   };
   
-//   useEffect(() => {
-//     if (!data || data.length === 0) return;
 
-//     // 📌 Usar D3.js para calcular posiciones automáticas
-//     const width = 800, height = 600;
-//     const simulation = d3.forceSimulation(data)
-//       .force("charge", d3.forceManyBody().strength(-300))
-//       .force("center", d3.forceCenter(width / 2, height / 2))
-//       .force("link", d3.forceLink().id((d) => d.id).distance(150))
-//       .on("tick", () => {
-//         setNodes(data.map((d) => ({
-//           id: d.id,
-//           position: { x: d.x, y: d.y },
-//           data: { label: d.label },
-//         })));
-//         setEdges(
-//           d.links.map((link) => ({
-//             id: `e${link.source}-${link.target}`,
-//             source: link.source,
-//             target: link.target,
-//           }))
-//         );
-//       });
+const MapaMental = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState(data.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-//     return () => simulation.stop();
-//   }, [data]);
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
+
+  const addNode = () => {
+    const newNode = {
+      id: uuidv4(),
+      data: { label: "Nuevo Nodo" },
+      position: { x: Math.random() * 400, y: Math.random() * 400 },
+      style: { backgroundColor: "#a0d2eb", padding: 10, borderRadius: 5 },
+    };
+    setNodes((nds) => [...nds, newNode]);
+  };
+
+  const onNodeDoubleClick = (event, node) => {
+    const newLabel = prompt("Editar texto del nodo:", node.data.label);
+    if (newLabel !== null) {
+      setNodes((nds) =>
+        nds.map((n) => (n.id === node.id ? { ...n, data: { label: newLabel } } : n))
+      );
+    }
+  };
 
   return (
-    <div className="h-[600px] w-full border p-4">
-      <ReactFlow nodes={data.nodes} edges={data.edges}>
+    <div style={{ position:'relative', width: "100%", height: "500px" }}>
+      <button onClick={addNode} style={{ position: "absolute", zIndex: 10, padding: 10 }}>
+        Añadir Nodo
+      </button>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        onNodeDoubleClick={onNodeDoubleClick}
+        fitView
+      >
         <MiniMap />
         <Controls />
         <Background />

@@ -22,7 +22,8 @@
     "react-router-dom": "^6.21.1",
     "react-slick": "^0.29.0",
     "reactflow": "^11.11.4",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

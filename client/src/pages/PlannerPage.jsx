@@ -116,6 +116,8 @@ function Planner() {
                     <button id="btn-generador" className="bg-blue-500 text-white py-2 px-4 rounded-md">Generar clase</button>
                     <span className="loader ml-2" id="loader"></span>
                 </div>
+                
+<MapaMental data={activity} />
             </form>
 
             {
@@ -132,7 +134,6 @@ function Planner() {
                         {/* <h4 className="font font-semibold text-gray-700 mb-2">Clase Generada:</h4> */}
                         {highlightUppercaseWords(activity.generatedClass)}
                     </div>
-                    <MapaMental data={activity} />
                 </div>)
             }
 
