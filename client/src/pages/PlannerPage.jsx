@@ -9,6 +9,7 @@ import { Link } from "react-router-dom"
 import Modal from "../components/Modal.jsx"
 import MainLayout from "../Layout/MainLayout"
 import SubjectsSelect from "../components/SubjectsSelect.jsx"
+import MapaMental from "../components/MapaMental.jsx"
 
 const methodologies = [
     { nombre: "Constructivismo", secciones: ["Problematización", "exploración", "comprensión", "creación", "evaluación"], fuentes: [] },
@@ -131,6 +132,7 @@ function Planner() {
                         {/* <h4 className="font font-semibold text-gray-700 mb-2">Clase Generada:</h4> */}
                         {highlightUppercaseWords(activity.generatedClass)}
                     </div>
+                    <MapaMental data={activity} />
                 </div>)
             }
 

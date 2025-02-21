@@ -2,6 +2,7 @@ import { config, data, methodologies } from '../config.js'
 import Activity from '../models/activity.model.js'
 import axios from 'axios'
 import pdf from 'pdf-parse'
+import natural from 'natural'
 
 
 export const getAllActivities = async (req, res) => {
@@ -132,3 +133,36 @@ export const createActivity = async (req, res) => {
     }
 }
 
+
+const extractConcepts = text =>{
+    const tokenizer = new natural.WordTokenizer();
+    const words = tokenizer.tokenize(text);
+
+    // 🔍 Filtrar palabras clave (eliminar stopwords)
+    const stopwords = new Set(natural.stopwords);
+    const keywords = words.filter((word) => !stopwords.has(word.toLowerCase()));
+
+    // 🔗 Crear relaciones (simples, podemos mejorar con NLP más avanzado)
+    const nodes = keywords.map((word, index) => ({
+        id: `node-${index}`,
+        label: word,
+        x: Math.random() * 800, // Posición inicial aleatoria
+        y: Math.random() * 600,
+    }));
+
+    const links = nodes.slice(1).map((node, index) => ({
+        source: nodes[0].id, // Conectar todos al primer nodo (puede mejorarse)
+        target: node.id,
+    }));
+
+    return { nodes, links };
+}
+
+
+export const generateMindMap = async (req, res) => {
+    const { classText } = req.body;
+    if (!classText) return res.status(400).json({ error: "No se envió texto" });
+
+    const mindmapData = extractConcepts(classText); // Extraer conceptos clave
+    return res.json(mindmapData);
+}
