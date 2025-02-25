@@ -117,7 +117,6 @@ function Planner() {
                     <span className="loader ml-2" id="loader"></span>
                 </div>
                 
-<MapaMental data={activity} />
             </form>
 
             {
@@ -134,9 +133,11 @@ function Planner() {
                         {/* <h4 className="font font-semibold text-gray-700 mb-2">Clase Generada:</h4> */}
                         {highlightUppercaseWords(activity.generatedClass)}
                     </div>
+                    
                 </div>)
             }
 
+<MapaMental classText={activity?.generatedClass} />
             {
                 loading && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

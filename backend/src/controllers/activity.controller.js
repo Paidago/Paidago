@@ -134,28 +134,61 @@ export const createActivity = async (req, res) => {
 }
 
 
-const extractConcepts = text =>{
-    const tokenizer = new natural.WordTokenizer();
-    const words = tokenizer.tokenize(text);
+const extractConcepts = async text =>{
+    const prompt = `
+        Eres una experta en redacciones y resúmenes. Creé esta clase: ${text} y debes **darme los conceptos clave**
+        que yo puedo tratar en esa clase para apartir de ahí crear un mapa mental.
+        No me des un formato de clase, sino conceptos importantes que yo pueda tratar
+        Los conceptos deben estar enumerados desde el 1 hasta los que consideres importantes.
+        Ejemplo:
+        1. El sistema solar
+        2. Los planetas
+        3. La tierra
+        4. La luna
+    `
 
-    // 🔍 Filtrar palabras clave (eliminar stopwords)
-    const stopwords = new Set(natural.stopwords);
-    const keywords = words.filter((word) => !stopwords.has(word.toLowerCase()));
+    let conceptos = []
 
-    // 🔗 Crear relaciones (simples, podemos mejorar con NLP más avanzado)
-    const nodes = keywords.map((word, index) => ({
-        id: `node-${index}`,
-        label: word,
-        x: Math.random() * 800, // Posición inicial aleatoria
-        y: Math.random() * 600,
-    }));
+    // Realiza la solicitud a la API de OpenAI usando Axios
+    await axios.post('https://api.openai.com/v1/completions', {...data, prompt}, config)
+    .then(response => {
+        console.log('Respuesta de la API de OpenAI:', response.data.choices[0].text);
+        conceptos = response.data.choices[0].text.trim().split('\n')
+        console.log(conceptos)
+    })
+    .catch(error => {
+        console.error('Error al realizar la solicitud a la API de OpenAI:', error.response ? error.response.data : error.message);
+    });
 
-    const links = nodes.slice(1).map((node, index) => ({
-        source: nodes[0].id, // Conectar todos al primer nodo (puede mejorarse)
-        target: node.id,
-    }));
+    const nodes = conceptos.map((concept, index) => {
+        return {
+            id: index.toString(),
+            data: { label: concept },
+            position: { x: Math.random() * 250, y: Math.random() *  5 },
+            style: { backgroundColor: "#f0f0f0", padding: 10, borderRadius: 5 },
+        }
+    })
 
-    return { nodes, links };
+    const edges = nodes.map((node, index) => {
+        return {
+            id: `e${index}-${index + 1}`,
+            source: node.id,
+            target: (index + 1).toString(),
+            animated: true
+        }
+    })
+
+    return { nodes, edges }
+    
+    // [
+    //     {
+    //         id: "1",
+    //         data: { label: },
+    //         position: { x: 250, y: 5 },
+    //         style: { backgroundColor: "#f0f0f0", padding: 10, borderRadius: 5 },
+    //     },
+    // ]
+
 }
 
 
@@ -163,6 +196,7 @@ export const generateMindMap = async (req, res) => {
     const { classText } = req.body;
     if (!classText) return res.status(400).json({ error: "No se envió texto" });
 
-    const mindmapData = extractConcepts(classText); // Extraer conceptos clave
+    const mindmapData = await extractConcepts(classText); // Extraer conceptos clave
+    console.log(mindmapData)
     return res.json(mindmapData);
 }
