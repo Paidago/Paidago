@@ -48,7 +48,7 @@ function MapaMental ({ topic }) {
     const { data: { nodes, edges }} = await generateMindMap({ topic, token: window.localStorage.getItem('token')  });
     setNodes([...nodes,
       { id: "10000", data: { label: topic }, position: { x: 0, y: 0 }, 
-      style: { backgroundColor: "#ef441f ", padding: 10, borderRadius: 5, margin: 10 } }]);
+      style: { backgroundColor: "#80edca", padding: 10, borderRadius: 5, margin: 10 } }]);
     setEdges(edges);
     console.log(edges)
   }
