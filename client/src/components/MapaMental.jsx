@@ -34,25 +34,28 @@ const data = {
       { id: "e1-3", source: "concepto", target: "exclusora", animated: true },
       { id: "e1-4", source: "concepto", target: "criterio", animated: true },
       { id: "e3-5", source: "criterio", target: "infra1", animated: true },
-      { id: "e4-6", source: "criterio", target: "infra2", animated: true }
+      { id: "e4-6", source: "criterio", target: "infra2", animated: true },
+      { id: "e5-6", source: "1000", target: "infra2", animated: true }
     ]
   };
   
 
-function MapaMental ({ classText }) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(data.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(data.edges);
+function MapaMental ({ topic }) {
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const generatednodesAndEdges = async () =>{
-    const { data: { nodes, edges }} = await generateMindMap({ classText, token: window.localStorage.getItem('token')  });
-    console.log(data)
-    setNodes(nodes);
+    const { data: { nodes, edges }} = await generateMindMap({ topic, token: window.localStorage.getItem('token')  });
+    setNodes([...nodes,
+      { id: "10000", data: { label: topic }, position: { x: 0, y: 0 }, 
+      style: { backgroundColor: "#ef441f ", padding: 10, borderRadius: 5, margin: 10 } }]);
     setEdges(edges);
+    console.log(edges)
   }
 
   useEffect(() => {
     generatednodesAndEdges();
-  }, [classText]);
+  }, [topic]);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),

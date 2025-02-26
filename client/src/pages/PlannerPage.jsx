@@ -33,10 +33,8 @@ function Planner() {
 
     const onSubmit = handleSubmit(async info => {
         setLoading(true)
-        console.log(info)
         const res = await createActivity({ ...info, token: window.localStorage.getItem('token') })
         setActivity(res.data)
-        console.log(res.data)
         setLoading(false)
     })
   
@@ -134,10 +132,11 @@ function Planner() {
                         {highlightUppercaseWords(activity.generatedClass)}
                     </div>
                     
+                    <MapaMental topic={activity?.topic} />
                 </div>)
+                
             }
 
-<MapaMental classText={activity?.generatedClass} />
             {
                 loading && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
