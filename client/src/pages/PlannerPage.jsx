@@ -9,17 +9,19 @@ import { Link } from "react-router-dom"
 import Modal from "../components/Modal.jsx"
 import MainLayout from "../Layout/MainLayout"
 import SubjectsSelect from "../components/SubjectsSelect.jsx"
+import MapaMental from "../components/MapaMental.jsx"
 
 const methodologies = [
-    { nombre: "Constructivismo", secciones: ["Problematización", "exploración", "comprensión", "creación", "evaluación"], fuentes: [] },
-    { nombre: "Conductismo",  secciones: ["Motivación", "explicación", "simulación", "demostración", "ejercitación", "evaluación"], fuentes: [] },
-    { nombre: "Aprendizaje Basado en Proyectos (ABP)",  secciones: ["Motivación", "problema", "explicación", "hipótesis", "problematización", "conclusiones", "afirmaciones"], fuentes: [] },
-    { nombre: "Aprendizaje por Competencias",  secciones: ["Introducción", "demostración", "comprensión (didáctica del juego)", "ejercitación", "evaluación"], fuentes: [] },
-    { nombre: "Aprendizaje cooperativo",  secciones: ["Problematización", "asignación de temáticas", "diálogo de hipótesis", "conclusiones"], fuentes: [] }
+    { nombre: "Constructivismo", secciones: ["Problematización", "exploración", "comprensión", "creación", "evaluación"], fuentes: [] },
+    { nombre: "Conductismo", secciones: ["Motivación", "explicación", "simulación", "demostración", "ejercitación", "evaluación"], fuentes: [] },
+    { nombre: "Aprendizaje Basado en Proyectos (ABP)", secciones: ["Motivación", "problema", "explicación", "hipótesis", "problematización", "conclusiones", "afirmaciones"], fuentes: [] },
+    { nombre: "Aprendizaje por Competencias", secciones: ["Introducción", "demostración", "comprensión (didáctica del juego)", "ejercitación", "evaluación"], fuentes: [] },
+    { nombre: "Aprendizaje cooperativo", secciones: ["Problematización", "asignación de temáticas", "diálogo de hipótesis", "conclusiones"], fuentes: [] }
 ];
 
 function Planner() {
     const { user } = useAuth()
+    const [showMindMap, setShowMindMap] = useState(false)
     const { register, handleSubmit } = useForm()
     const [activity, setActivity] = useState(null)
     const [file, setFile] = useState('');
@@ -32,41 +34,40 @@ function Planner() {
 
     const onSubmit = handleSubmit(async info => {
         setLoading(true)
-        console.log(info)
         const res = await createActivity({ ...info, token: window.localStorage.getItem('token') })
         setActivity(res.data)
-        console.log(res.data)
         setLoading(false)
     })
-  
+
     const highlightUppercaseWords = (text) => {
         const words = text.replace(/\n+/g, ' ')
-        .replace(/\*\*/g, ' ')
-        .replace(/:/g, ': ')
-        .replace(/\[/g, ' ')
-        .replace(/\]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .replace(/[\u{1F600}-\u{1F64F}]/gu, '')
-        .replace(/�/g, '')
-        .trim()
-        .split(' ').filter(word => word !== '');
-        
+            .replace(/\*\*/g, ' ')
+            .replace(/:/g, ': ')
+            .replace(/\[/g, ' ')
+            .replace(/\]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .replace(/[\u{1F600}-\u{1F64F}]/gu, '')
+            .replace(/�/g, '')
+            .trim()
+            .split(' ').filter(word => word !== '');
+
         const metodologia = methodologies.find(m => m.nombre === activity.methodology);
         const secciones = metodologia.secciones.map(s => s.toUpperCase().concat(':'));
 
-        const palabras = ['DIÁLOGO','DE','HIPÓTESIS:', 'ASIGNACIÓN', 'TEMÁTICAS:', 'DIDÁCTICA', 'DEL', 'JUEGO:']
-        
+        const palabras = ['DIÁLOGO', 'DE', 'HIPÓTESIS:', 'ASIGNACIÓN', 'TEMÁTICAS:', 'DIDÁCTICA', 'DEL', 'JUEGO:']
+
         return words.map((word, index) => {
             if (secciones.includes(word.trim())) {
                 return <p key={index} className="font-bold text-indigo-600">{word} </p>;
             }
-            if(palabras.includes(word.trim())){
+            if (palabras.includes(word.trim())) {
                 if (word.includes(':')) return <p key={index} className="font-bold text-indigo-600">{word} </p>;
                 return <span key={index} className="font-bold text-indigo-600">{word} </span>;
             }
             return <span key={index} className="text-gray-700">{word} </span>;
         });
     };
+
 
 
     return (
@@ -115,6 +116,7 @@ function Planner() {
                     <button id="btn-generador" className="bg-blue-500 text-white py-2 px-4 rounded-md">Generar clase</button>
                     <span className="loader ml-2" id="loader"></span>
                 </div>
+
             </form>
 
             {
@@ -131,7 +133,21 @@ function Planner() {
                         {/* <h4 className="font font-semibold text-gray-700 mb-2">Clase Generada:</h4> */}
                         {highlightUppercaseWords(activity.generatedClass)}
                     </div>
+
+                    {
+                        showMindMap ? <MapaMental topic={activity?.topic} /> : (
+                            <div className="mt-4">
+                                <button onClick={() => setShowMindMap(true)} className="bg-blue-500 text-white py-2 px-4 rounded-md">¿Deseas generar un mapa mental?</button>
+                                <span className="loader ml-2" id="loader"></span>
+                            </div>
+                        )
+                    }
+
+
+
+
                 </div>)
+
             }
 
             {

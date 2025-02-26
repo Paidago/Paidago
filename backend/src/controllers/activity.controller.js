@@ -2,6 +2,7 @@ import { config, data, methodologies } from '../config.js'
 import Activity from '../models/activity.model.js'
 import axios from 'axios'
 import pdf from 'pdf-parse'
+import natural from 'natural'
 
 
 export const getAllActivities = async (req, res) => {
@@ -55,7 +56,7 @@ export const createActivity = async (req, res) => {
             texto = info.text.substring(0, 5000); // Limitar a 5000 caracteres
         }
 
-        
+
         const prompt = `
             📌 **Objetivo**:  
             Eres una experta en pedagogía y didáctica. Debes crear una **clase estructurada** siguiendo la metodología proporcionada.  
@@ -87,7 +88,7 @@ export const createActivity = async (req, res) => {
         let generatedClass = ''
 
         // Realiza la solicitud a la API de OpenAI usando Axios
-        await axios.post('https://api.openai.com/v1/completions', {...data, prompt}, config)
+        await axios.post('https://api.openai.com/v1/completions', { ...data, prompt }, config)
             .then(response => {
                 console.log('Respuesta de la API de OpenAI:', response.data.choices[0].text);
                 generatedClass = response.data.choices[0].text
@@ -132,3 +133,99 @@ export const createActivity = async (req, res) => {
     }
 }
 
+function generateNode(index, concept, totalNodes) {
+    const centerX = 0; // Posición central del nodo principal
+    const centerY = 0;
+    const radius = 350; // Distancia desde el centro
+    const angle = (index / totalNodes) * (2 * Math.PI); // Espaciado uniforme en círculo
+
+    const x = centerX + radius * Math.cos(angle);
+    const y = centerY + radius * Math.sin(angle);
+
+    return {
+        id: index.toString(),
+        data: { label: concept },
+        position: { x, y },
+        style: { backgroundColor: "#f0f0f0", padding: 10, borderRadius: 5, margin: 10 },
+    };
+}
+
+function generateEdges(nodes) {
+    const edges = nodes.map((node, index) => {
+        const nextIndex = (index + 1) % nodes.length; // Conectar el siguiente nodo (incluyendo el último con el primero)
+        return {
+            id: `edge-${index}`,
+            source: node.id,
+            target: nodes[nextIndex].id,
+            animated: true
+        };
+    });
+
+    for (let i = 0; i < nodes.length; i++) {
+        edges.push({
+            id: `edge-1000-${i + 1}`,
+            source: "10000",
+            target: i.toString(),
+            animated: true
+        });
+    }
+
+    return edges;
+}
+
+
+const extractConcepts = async topic => {
+    console.log(topic)
+    const prompt = `
+        Eres una experta en redacciones y resúmenes. Debes **darme los conceptos clave**
+        que yo puedo tratar en esa clase para apartir de ahí crear un mapa mental.
+        No me des un formato de clase, sino conceptos importantes acerca de ${topic} que yo pueda tratar
+        Debes darme los 10 conceptos mas importantes y deben estar enumerados desde el 1 al 10 
+        Ejemplo:
+        1. El sistema solar
+        2. Los planetas
+        3. La tierra
+        4. La luna
+    `
+
+    let conceptos = []
+
+    // Realiza la solicitud a la API de OpenAI usando Axios
+    await axios.post('https://api.openai.com/v1/completions', { ...data, prompt }, config)
+        .then(response => {
+            console.log('Respuesta de la API de OpenAI:', response.data.choices[0].text);
+            conceptos = response.data.choices[0].text.trim().split('\n')
+            console.log(conceptos)
+        })
+        .catch(error => {
+            console.error('Error al realizar la solicitud a la API de OpenAI:', error.response ? error.response.data : error.message);
+        });
+
+    const nodes = conceptos.map((concept, index) => generateNode(index, concept, conceptos.length));
+
+    const edges = generateEdges(nodes);
+
+    return { nodes, edges }
+
+    // [
+    //     {
+    //         id: "1",
+    //         data: { label: },
+    //         position: { x: 250, y: 5 },
+    //         style: { backgroundColor: "#f0f0f0", padding: 10, borderRadius: 5 },
+    //     },
+    // ]
+
+}
+
+
+export const generateMindMap = async (req, res) => {
+    const { topic } = req.body;
+    if (!topic) return res.status(400).json({ error: "No se envió texto" });
+
+    const { nodes, edges } = await extractConcepts(topic); // Extraer conceptos clave
+    
+    return res.json({ nodes, 
+        edges 
+    });
+}
