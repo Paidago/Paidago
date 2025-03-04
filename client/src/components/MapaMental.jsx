@@ -40,15 +40,28 @@ const data = {
   };
   
 
-function MapaMental ({ topic }) {
+function MapaMental ({ topic, competence }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const generatednodesAndEdges = async () =>{
-    const { data: { nodes, edges }} = await generateMindMap({ topic, token: window.localStorage.getItem('token')  });
+    const { data: { nodes, edges }} = await generateMindMap({ topic, competence, token: window.localStorage.getItem('token')  });
     setNodes([...nodes,
       { id: "10000", data: { label: topic }, position: { x: 0, y: 0 }, 
-      style: { backgroundColor: "#80edca", padding: 10, borderRadius: 5, margin: 10 } }]);
+      style: { 
+        backgroundColor: "#4A90E2",  // Azul vibrante
+        color: "#fff",  // Texto blanco para contraste
+        padding: "15px 20px",  // Más espacio interno
+        borderRadius: "12px",  // Bordes más redondeados
+        boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)",  // Sombra sutil
+        border: "2px solid #357ABD",  // Borde para resaltar
+        fontWeight: "bold",  // Texto más llamativo
+        fontSize: "16px",  // Tamaño de fuente ideal
+        textAlign: "center",  // Centrado del contenido
+        transition: "all 0.3s ease-in-out",  // Transición suave
+        cursor: "pointer",  // Cursor de clic para interactividad
+        margin: "10px"  // Espacio entre nodos
+    }}]);
     setEdges(edges);
     console.log(edges)
   }
@@ -82,7 +95,7 @@ function MapaMental ({ topic }) {
   };
 
   return (
-    <div style={{ position:'relative', width: "100%", height: "500px" }} className="bg-#34 text-white py-2 px-4 rounded-md mt-4">
+    <div style={{ position:'relative', width: "100%", height: "500px" }} className="bg-gray-700 text-white py-2 px-4 rounded-md mt-4">
       <button onClick={addNode} className="bg-blue-500 text-white py-2 px-4 rounded-md" style={{ position: "absolute", zIndex: 10, padding: 10 }}>
         Añadir Nodo
       </button>

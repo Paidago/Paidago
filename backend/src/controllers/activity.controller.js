@@ -58,7 +58,7 @@ export const createActivity = async (req, res) => {
 
 
         const prompt = `
-            📌 **Objetivo**:  
+            **Objetivo**:  
             Eres una experta en pedagogía y didáctica. Debes crear una **clase estructurada** siguiendo la metodología proporcionada.  
 
             📖 **Detalles**:  
@@ -68,7 +68,7 @@ export const createActivity = async (req, res) => {
             Las únicas herramientas disponibles son: **${tools}**.  
             Los secciones asignadas para esta clase son: **${sections}**.  
 
-            📌 **Especificaciones clave**:  
+            **Especificaciones clave**:  
             -**Usa únicamente texto limpio y estructurado.**  
             - **No agregues emojis, caracteres especiales o decoraciones innecesarias.**  
             - **Los tiempos deben estar en MAYÚSCULAS** y deben seguir el siguiente formato:  
@@ -146,7 +146,20 @@ function generateNode(index, concept, totalNodes) {
         id: index.toString(),
         data: { label: concept },
         position: { x, y },
-        style: { backgroundColor: "#f0f0f0", padding: 10, borderRadius: 5, margin: 10 },
+        style: {
+            backgroundColor: "#ffffff",  // Fondo blanco para diferenciarlo de la idea principal
+            color: "#333",  // Texto oscuro para contraste
+            padding: "12px 16px",  // Espaciado equilibrado
+            borderRadius: "10px",  // Bordes más suaves
+            boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.15)",  // Sombra ligera para resaltar
+            border: "2px solid #D6D6D6",  // Borde gris claro para dar estructura
+            fontSize: "14px",  // Tamaño de fuente un poco menor que la idea principal
+            fontWeight: "500",  // Peso de fuente medio
+            textAlign: "center",  // Centrado del texto
+            transition: "all 0.3s ease-in-out",  // Suavidad en interacciones
+            cursor: "pointer",  // Interactivo
+            margin: "8px"  // Espaciado uniforme entre nodos secundarios
+        },
     };
 }
 
@@ -174,13 +187,11 @@ function generateEdges(nodes) {
 }
 
 
-const extractConcepts = async topic => {
+const extractConcepts = async (topic, competence) => {
     console.log(topic)
     const prompt = `
-        Eres una experta en redacciones y resúmenes. Debes **darme los conceptos clave**
-        que yo puedo tratar en esa clase para apartir de ahí crear un mapa mental.
-        No me des un formato de clase, sino conceptos importantes acerca de ${topic} que yo pueda tratar
-        Debes darme los 10 conceptos mas importantes y deben estar enumerados desde el 1 al 10 
+        Eres una experta en redacciones y resúmenes. Debes **darme los conceptos clave** acerca de ${topic} relacionados con la competencia **${competence}**.
+        Debes darme los 10 conceptos mas importantes, no seas muy extenso, trata de condensarlo todo en palabras o conceptos clave y deben estar enumerados desde el 1 al 10 
         Ejemplo:
         1. El sistema solar
         2. Los planetas
@@ -220,12 +231,13 @@ const extractConcepts = async topic => {
 
 
 export const generateMindMap = async (req, res) => {
-    const { topic } = req.body;
+    const { topic, competence } = req.body;
     if (!topic) return res.status(400).json({ error: "No se envió texto" });
 
-    const { nodes, edges } = await extractConcepts(topic); // Extraer conceptos clave
-    
-    return res.json({ nodes, 
-        edges 
+    const { nodes, edges } = await extractConcepts(topic, competence); // Extraer conceptos clave
+
+    return res.json({
+        nodes,
+        edges
     });
 }
