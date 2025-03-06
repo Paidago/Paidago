@@ -1,16 +1,27 @@
 import 'dotenv/config'
 
-export const PORT = process.env.PORT
+//NODE
 export const JWT_SECRET = process.env.JWT_SECRET
+export const PORT = process.env.PORT
+
+//AI
+export const TOKENS = parseInt(process.env.TOKENS)
+export const MODEL = process.env.MODEL
 export const AI_API_KEY = process.env.AI_API_KEY
+
+
 export const INSTAGRAM_TOKEN = process.env.INSTAGRAM_TOKEN
 
+//PAYPAL
 export const PAYPAL_API_CLIENT = process.env.PAYPAL_API_CLIENT
 export const PAYPAL_API_SECRET = process.env.PAYPAL_API_SECRET
 export const PAYPAL_API = process.env.PAYPAL_API
+
+//URLS
 export const URL = process.env.NODE_ENV === 'dev' ? process.env.DEV_URL : process.env.PROD_URL
 export const DB_URL = process.env.NODE_ENV === 'dev' ? process.env.MONGO_DB_URI_TEST : process.env.MONGO_DB_URI
 
+//METHODOLOGIES
 export const methodologies = [
     { nombre: "Constructivismo", secciones: ["Problematización", "exploración", "comprensión", "creación", "evaluación"], fuentes: [] },
     { nombre: "Conductismo",  secciones: ["Motivación", "explicación", "simulación", "demostración", "ejercitación", "evaluación"], fuentes: [] },
@@ -20,8 +31,8 @@ export const methodologies = [
 ];
 
 export const data = {
-    model: 'gpt-3.5-turbo-instruct',
-    max_tokens: 600, // Ajusta según sea necesario
+    model: MODEL,
+    max_tokens: TOKENS, // Ajusta según sea necesario
 };
 
 export const config = {
