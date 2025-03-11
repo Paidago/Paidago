@@ -6,7 +6,7 @@ import SubjectsSelect from "../components/SubjectsSelect.jsx";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import Modal from "../components/Modal.jsx";
-import PDF from "../components/PDF.jsx";
+import Docx from "../components/Docx.jsx";
 
 function BancoDePreguntasPage() {
     const { user } = useAuth();
@@ -62,7 +62,7 @@ function BancoDePreguntasPage() {
                                     </div>
                                 ))}
                             </div>
-                            <PDF examData={icfe} />
+                            <Docx examData={icfe} />
                         </div>
                     ))
                 ) : (
