@@ -6,6 +6,7 @@ import SubjectsSelect from "../components/SubjectsSelect.jsx";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import Modal from "../components/Modal.jsx";
+import ClassesCarousel from "../components/Classes.jsx";
 
 function History() {
     const { user } = useAuth();
@@ -67,7 +68,10 @@ function History() {
                     </button>
                 </form>
 
-                {user && activities.length > 0 ? (
+                {user && activities.length > 0 && <ClassesCarousel clases={activities} />}
+                {user && activities.length === 0 && <p className="text-center text-gray-600 mt-6">No hay actividades disponibles.</p>}
+
+                {/* {user && activities.length > 0 ? (
                     activities.map(activity => (
                         <div key={activity._id} className="bg-gray-50 shadow-lg rounded-lg p-6 mb-4 border">
                             <h3 className="text-xl font-bold text-indigo-700">{activity.topic}</h3>
@@ -92,7 +96,7 @@ function History() {
                             Iniciar sesión
                         </Link>
                     </Modal>
-                )}
+                )} */}
             </div>
         </MainLayout>
     );
