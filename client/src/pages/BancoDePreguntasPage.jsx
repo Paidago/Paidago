@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import Modal from "../components/Modal.jsx";
 import Docx from "../components/Docx.jsx";
+import ClassesCarousel from "../components/Classes.jsx";
 
 function BancoDePreguntasPage() {
     const { user } = useAuth();
@@ -36,42 +37,13 @@ function BancoDePreguntasPage() {
                     <button className="mt-4 w-full bg-indigo-600 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-indigo-700 transition">Filtrar</button>
                 </form>
 
-                {icfes.length > 0 ? (
-                    icfes.map((icfe) => (
-                        <div key={icfe._id} className="bg-gray-50 shadow-lg rounded-lg p-6 mb-4 border">
-                            <h3 className="text-xl font-bold text-indigo-700">{icfe.subject}</h3>
-                            <p className="text-sm text-gray-500">{icfe.competence}</p>
-                            <hr className="my-3" />
-                            <div className="text-gray-700 space-y-2">
-                                <p><span className="font-semibold">Párrafo Base:</span> {icfe.paragraph}</p>
-                                <p><span className="font-semibold">Cantidad de Enunciados:</span> {icfe.questionCount}</p>
-                            </div>
-                            <div id="exam-content" className="space-y-6">
-                                {icfe?.questions?.map((question, index) => (
-                                    <div key={index} className="p-4 border-l-4 border-indigo-500 bg-gray-100 rounded-md shadow-sm">
-                                        <p className="text-lg font-semibold text-gray-800">{question.statement}</p>
-                                        <ul className="mt-2 space-y-2">
-                                            {question.options.map((option, i) => (
-                                                <li key={i} className="flex items-center space-x-2">
-                                                    <input type="radio" name={`question-${index}`} className="h-4 w-4 text-indigo-600" />
-                                                    <span className="text-gray-700">{option}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <p className="text-lg font-semibold text-gray-800">{question.correctAnswer}</p>
-                                    </div>
-                                ))}
-                            </div>
-                            <Docx examData={icfe} />
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-center text-gray-600 mt-6">No hay preguntas disponibles para la asignatura seleccionada.</p>
-                )}
-
+                {user && icfes.length > 0 && <ClassesCarousel clases={icfes} type='icfes' />}
+                {user && icfes.length === 0 && <p className="text-center text-gray-600 mt-6">No hay preguntas disponibles.</p>}
                 {!user && (
                     <Modal message="Debes haber iniciado sesión para ver tu historial">
-                        <Link to="/login" className="bg-purple-500 hover:bg-purple-600 w-20 font-bold text-white py-2 px-4 rounded-md transition duration-300">Login</Link>
+                        <Link to="/login" className="bg-purple-500 w-24 text-center text-white font-semibold py-2 px-4 rounded-md shadow-md hover:bg-purple-700 transition">
+                            Iniciar sesión
+                        </Link>
                     </Modal>
                 )}
             </div>

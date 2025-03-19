@@ -39,7 +39,7 @@ function History() {
                     </button>
                 </form>
 
-                {user && activities.length > 0 && <ClassesCarousel clases={activities} />}
+                {user && activities.length > 0 && <ClassesCarousel clases={activities} type='activity' />}
                 {user && activities.length === 0 && <p className="text-center text-gray-600 mt-6">No hay actividades disponibles.</p>}
                 {!user && (
                     <Modal message="Debes haber iniciado sesión para ver tu historial">
