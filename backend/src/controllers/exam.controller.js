@@ -6,48 +6,49 @@ import axios from 'axios'
 // Función para interactuar con la API de OpenAI y generar el examen
 const generateExamFromAI = async (subject, especifications, activities) => {
     try {
-        const prompt = `
-        Eres una experta en pedagogía y didáctica. Tu tarea es generar un examen sobre ${subject}, asegurando que todas las preguntas cumplan con las siguientes especificaciones: ${especifications}.
-        
-        📌 **Instrucciones clave**:  
-        - **Formato obligatorio** para cada pregunta:
-          1. Número de la pregunta) Texto de la pregunta.
-          2. Opciones de respuesta: **Deben estar en un arreglo y separadas por '--' (NO por comas ',')**.
-          3. La respuesta correcta debe indicarse después con el formato exacto: **Respuesta correcta: [Respuesta correcta]**.
-        
-        📌 **Fuente del examen**:  
-        El examen debe basarse exclusivamente en la siguiente información:  
-        "${activities.map(activity => activity.generatedClass).join('. ')}"  
-        
-        ⚠️ **Reglas estrictas**:  
-        - Solo genera **preguntas de acuerdo a las especificaciones**.
-        - Genera exactamente el numero de preguntas que se te piden y **Debes estar atenta cuantas te piden de seleccion multiple y cuantas abiertas**  
-        - Respeta **estrictamente** el formato proporcionado.  
-        - **No agregues texto adicional** como "Aquí está tu examen" o "Preguntas generadas". Solo responde con las preguntas estructuradas según las reglas indicadas.  
-        
-        Ejemplo de formato correcto:  
-        Para seleccion multiple:
-        1) ¿Cuál es la capital de Francia?  
-        [París--Londres--Berlín--Madrid]  
-        Respuesta correcta: [París]  
-        
-        2) ¿Cuál es el resultado de 2 + 2?  
-        [3--4--5--6]  
-        Respuesta correcta: [4]  
-        
-        Para abiertas:
-        3) ¿Cuál es la fórmula del agua?
-        []
-        Respuesta correcta: [H2O]
-        Genera el examen respetando este mismo formato y sin añadir información extra.  
-        `;
-        
+        const messages = [
+            {
+              "role": "system",
+              "content": "Eres una experta en pedagogía y didáctica. Tu tarea es generar exámenes siguiendo estrictamente las instrucciones dadas por el usuario."
+            },
+            {
+              "role": "user",
+              "content": `Genera un examen sobre ${subject} con las siguientes especificaciones: ${especifications}.
+              📌 **Formato obligatorio:**  
+              Cada pregunta debe seguir esta estructura:  
+              1) Texto de la pregunta.  
+              2) Opciones en un arreglo separadas por '--' (NO comas).  
+              3) Respuesta correcta con el formato exacto: 
+              **Respuesta correcta: [opción]**.📌 
+              **Fuente:**  Basado únicamente en: "${activities.map(activity => activity.generatedClass).join('. ')}".
+              **Reglas:**
+              - **Respeta exactamente el número y tipo de preguntas (múltiple opción/abiertas).**  
+              - **Sigue el formato al pie de la letra.**  
+              - No añadas texto extra como "Aquí está tu examen".
+              📌 **Ejemplo de formato:**  
+              Para selección múltiple:  
+              1) ¿Cuál es la capital de Francia?  
+              [París--Londres--Berlín--Madrid]  
+              Respuesta correcta: [París]  
+              
+              Para abiertas:  
+              2) ¿Cuál es la fórmula del agua?  
+              []  
+              Respuesta correcta: [H2O]  
+              
+              Genera el examen con este mismo formato y sin agregar información adicional.`
+            }
+          ]
 
         // Realiza la solicitud a la API de OpenAI
-        const response = await axios.post('https://api.openai.com/v1/completions', {...data, prompt}, config);
-        return response.data.choices[0].text;
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', { ...data, messages }, config);
+        // console.log(response.data.choices)
+         
+        return response.data.choices[0].message.content;
     } catch (error) {
-        throw new Error('Error al generar el examen desde la API: ' + error.message);
+        console.log('Error al generar el examen desde la API: ');
+        console.log(error.response.data);
+        return error.response.config.data
     }
 };
 
@@ -58,17 +59,17 @@ const parseExamQuestions = (examText) => {
     questions.forEach(q => {
         const parts = q.split("\n").filter(item => item !== ''); // Divide la pregunta y las opciones
         const statement = parts[0].trim(); // Extrae la pregunta
-        const options = parts[1]?.replace('[','').replace(']','').split('--').map(item => item.trim()).filter(item => item !== ''); // Extrae las opciones
+        const options = parts[1]?.replace('[', '').replace(']', '').split('--').map(item => item.trim()).filter(item => item !== ''); // Extrae las opciones
         const correctAnswer = parts[2];
-    
+
         examQuestions.push({
             statement,
-            type: options? 'multiple-choice' : 'open-ended',
+            type: options ? 'multiple-choice' : 'open-ended',
             options,
             correctAnswer,
         });
     })
-    
+
     return examQuestions;
 };
 
@@ -95,6 +96,7 @@ export const createExamBySubject = async (req, res) => {
 
         // Generar el examen utilizando la API de OpenAI
         const examText = await generateExamFromAI(subject, especifications, activities);
+        console.log(examText);
 
         // Parsear el texto del examen para obtener las preguntas estructuradas
         const questions = parseExamQuestions(examText);

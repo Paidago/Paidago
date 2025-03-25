@@ -103,7 +103,7 @@ function CreateExam() {
                                 {exam?.questions?.map((question, index) => (
                                     <div key={index} className="p-4 border-l-4 border-indigo-500 bg-gray-100 rounded-md shadow-sm">
                                         <p className="text-lg font-semibold text-gray-800">
-                                            {question.text}
+                                            {question.statement}
                                         </p>
 
                                         {question.type === "multiple-choice" ? (
