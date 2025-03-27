@@ -6,7 +6,6 @@ import SubjectsSelect from "../components/SubjectsSelect.jsx";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import Modal from "../components/Modal.jsx";
-import Docx from "../components/Docx.jsx";
 import ClassesCarousel from "../components/Classes.jsx";
 
 function BancoDePreguntasPage() {
