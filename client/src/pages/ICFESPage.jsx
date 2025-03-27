@@ -14,14 +14,29 @@ function ICFESPage() {
     const { register, handleSubmit } = useForm();
     const [icfes, setIcfes] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
 
     const onSubmit = handleSubmit(async info => {
         setLoading(true);
+        setProgress(0);
         console.log(info);
-        const res = await createIcfes({ ...info, token: window.localStorage.getItem('token') });
-        setIcfes(res.data);
-        console.log(res.data);
-        setLoading(false);
+        
+        const interval = setInterval(() => {
+            setProgress((prev) => (prev < 90 ? prev + 10 : prev));
+        }, 500);
+
+        try {
+            const res = await createIcfes({ ...info, token: window.localStorage.getItem('token') });
+            setIcfes(res.data);
+            console.log(res.data);
+            setLoading(false);
+        } catch (err) {
+            console.log(err)
+        } finally {
+            clearInterval(interval)
+            setLoading(false)
+        }
+        
     });
 
     return (
@@ -84,9 +99,16 @@ function ICFESPage() {
 
             {loading && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
-                        <h2 className="text-xl font-bold text-gray-800">Generando Examen...</h2>
-                        <p className="text-gray-600 mt-2">Por favor, espera un momento.</p>
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                        <h2 className="text-xl font-bold mb-4">Generando Examen...</h2>
+                        <p className="text-gray-700">Por favor, espera un momento.</p>
+                        <div className="bg-gray-500 rounded h-4 text-center w-full relative transition-all">
+                            <div
+                                className="bg-blue-500 rounded h-4 text-center ablute transition-all"
+                                style={{ width: `${progress}%` }}
+                            ></div>
+                            {progress}%
+                        </div>
                     </div>
                 </div>
             )}

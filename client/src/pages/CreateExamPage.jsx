@@ -13,14 +13,29 @@ function CreateExam() {
     const { register, handleSubmit } = useForm()
     const [exam, setExam] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [progress, setProgress] = useState(0);
 
     const onSubmit = handleSubmit(async data => {
         setLoading(true)
+        setProgress(0);
+
+        // Simula la carga mientras la API responde (animación progresiva)
+        const interval = setInterval(() => {
+            setProgress((prev) => (prev < 90 ? prev + 10 : prev)); // Llega hasta 90% antes de la respuesta
+        }, 500);
+
         console.log(data)
-        const res = await createExam({ ...data, token: window.localStorage.getItem('token') })
-        console.log('RESPUESTA', res)
-        setExam(res.data)
-        setLoading(false)
+        try {
+            const res = await createExam({ ...data, token: window.localStorage.getItem('token') })
+            console.log('RESPUESTA', res)
+            setExam(res.data)
+            setProgress(100);
+        } catch (err) {
+            console.log(err)
+        } finally {
+            clearInterval(interval)
+            setLoading(false)
+        }
     })
 
     useEffect(() => { console.log(exam) }, [exam])
@@ -83,6 +98,13 @@ function CreateExam() {
                         <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                             <h2 className="text-xl font-bold mb-4">Generando Examen...</h2>
                             <p className="text-gray-700">Por favor, espera un momento.</p>
+                            <div className="bg-gray-500 rounded h-4 text-center w-full relative transition-all">
+                                <div
+                                    className="bg-blue-500 rounded h-4 text-center ablute transition-all"
+                                    style={{ width: `${progress}%` }}
+                                ></div>
+                                {progress}%
+                            </div>
                         </div>
                     </div>
                 ) :
@@ -103,7 +125,7 @@ function CreateExam() {
                                 {exam?.questions?.map((question, index) => (
                                     <div key={index} className="p-4 border-l-4 border-indigo-500 bg-gray-100 rounded-md shadow-sm">
                                         <p className="text-lg font-semibold text-gray-800">
-                                            {question.text}
+                                            {question.statement}
                                         </p>
 
                                         {question.type === "multiple-choice" ? (

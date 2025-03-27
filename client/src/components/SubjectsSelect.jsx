@@ -19,7 +19,8 @@ const subjects = [
     'Biologia',
     'Geografia',
     'Educacion Ciudadana',
-    'Educacion Ambiental'
+    'Educacion Ambiental',
+    'Empresarial'
 ]
 
 function SubjectsSelect({ register, children }) {
