@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react"
 import { createActivity } from "../api/activity"
-import Carousel from "../components/CarouselPlanner"
 import { useForm } from 'react-hook-form'
-import Card from "../components/CardCarousel"
 import PayPalPayment from '../components/PayPalPayment.jsx'
 import { useAuth } from "../context/AuthContext"
 import { Link } from "react-router-dom"
@@ -26,6 +24,7 @@ function Planner() {
     const [activity, setActivity] = useState(null)
     const [file, setFile] = useState('');
     const [loading, setLoading] = useState(false)
+    const [progress, setProgress] = useState(0);
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -34,9 +33,22 @@ function Planner() {
 
     const onSubmit = handleSubmit(async info => {
         setLoading(true)
-        const res = await createActivity({ ...info, token: window.localStorage.getItem('token') })
-        setActivity(res.data)
-        setLoading(false)
+        setProgress(0);
+
+        const interval = setInterval(() => {
+            setProgress((prev) => (prev < 90 ? prev + 10 : prev));
+        }, 500);
+
+        try {
+            const res = await createActivity({ ...info, token: window.localStorage.getItem('token') })
+            setActivity(res.data)
+            console.log(res.data);
+        } catch (err) {
+            console.log(err)
+        } finally {
+            clearInterval(interval)
+            setLoading(false)
+        }
     })
 
     const highlightUppercaseWords = (text) => {
@@ -78,12 +90,11 @@ function Planner() {
                 </p>
                 <cite className="text-xl font-medium text-gray-600">—L. Vygotsky—</cite>
             </figure>
-    
+
             <form
                 id="form-clase"
-                className={`container mx-auto p-10 bg-white rounded-2xl shadow-lg text-black transition-all ${
-                    !user && 'blur-sm opacity-50'
-                }`}
+                className={`container mx-auto p-10 bg-white rounded-2xl shadow-lg text-black transition-all ${!user && 'blur-sm opacity-50'
+                    }`}
                 onSubmit={onSubmit}
             >
                 <h2 className="text-3xl font-extrabold mb-6 text-center uppercase text-indigo-600">
@@ -147,7 +158,7 @@ function Planner() {
                     <span className="loader ml-3" id="loader"></span>
                 </div>
             </form>
-    
+
             {activity && (
                 <div key={activity._id} className="bg-white mt-6 shadow-lg rounded-2xl p-6 border">
                     <h3 className="text-xl font-semibold text-indigo-600">{activity.topic}</h3>
@@ -167,7 +178,7 @@ function Planner() {
                     <div className="mt-4 bg-gray-100 p-4 rounded-lg">
                         {highlightUppercaseWords(activity.generatedClass)}
                     </div>
-    
+
                     {showMindMap ? (
                         <MapaMental topic={activity?.topic} competence={activity?.competence} />
                     ) : (
@@ -183,16 +194,23 @@ function Planner() {
                     )}
                 </div>
             )}
-    
+
             {loading && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-xl w-96 text-center">
-                        <h2 className="text-xl font-bold mb-4">Generando Clase...</h2>
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                        <h2 className="text-xl font-bold mb-4">Generando Examen...</h2>
                         <p className="text-gray-700">Por favor, espera un momento.</p>
+                        <div className="bg-gray-500 rounded h-4 text-center w-full relative transition-all">
+                            <div
+                                className="bg-blue-500 rounded h-4 text-center ablute transition-all"
+                                style={{ width: `${progress}%` }}
+                            ></div>
+                            {progress}%
+                        </div>
                     </div>
                 </div>
             )}
-    
+
             {!user && (
                 <Modal message="Debes haber iniciado sesión para usar el planeador">
                     <Link
@@ -203,7 +221,7 @@ function Planner() {
                     </Link>
                 </Modal>
             )}
-    
+
             {user && !user.paymentID && (
                 <Modal message="Para hacer uso del planeador debes adquirir nuestra membresía!!">
                     <PayPalPayment />
@@ -211,7 +229,7 @@ function Planner() {
             )}
         </MainLayout>
     );
-    
+
 }
 
 export default Planner
